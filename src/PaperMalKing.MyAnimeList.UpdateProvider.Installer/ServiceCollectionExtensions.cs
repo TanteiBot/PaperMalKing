@@ -2,11 +2,11 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System;
-using System.Net;
 using System.Net.Http;
 using JikanDotNet;
 using JikanDotNet.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PaperMalKing.Common.RateLimiters;
@@ -16,8 +16,6 @@ using PaperMalKing.MyAnimeList.Wrapper.Abstractions;
 using PaperMalKing.UpdatesProviders.Base.Features;
 using PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 using Polly;
-using Polly.Contrib.WaitAndRetry;
-using Polly.Extensions.Http;
 
 namespace PaperMalKing.MyAnimeList.UpdateProvider.Installer;
 
@@ -25,37 +23,52 @@ public static class ServiceCollectionExtensions
 {
 	public static IServiceCollection AddMyAnimeList(this IServiceCollection serviceCollection)
 	{
+		const int malHttpRetries = 3;
+
 		serviceCollection.AddOptions<MalOptions>().BindConfiguration(Constants.Name).ValidateDataAnnotations().ValidateOnStart();
 		serviceCollection.AddSingleton(RateLimiterExtensions.ConfigurationLambda<MalOptions, IMyAnimeListClient>);
 
-		var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError().OrResult(static message => message.StatusCode == HttpStatusCode.TooManyRequests)
-											  .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(10), 3));
-		serviceCollection.AddHttpClient(Constants.UnOfficialApiHttpClientName).AddPolicyHandler(retryPolicy)
-						 .ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory()).AddHttpMessageHandler(GetRateLimiterHandler)
-						 .ConfigureHttpClient(client =>
-						 {
-							 client.Timeout = TimeSpan.FromSeconds(120L);
-							 client.DefaultRequestHeaders.UserAgent.Clear();
-							 client.DefaultRequestHeaders.UserAgent.ParseAdd(Constants.UserAgent);
-						 });
-		serviceCollection.AddHttpClient(Constants.OfficialApiHttpClientName).AddPolicyHandler(retryPolicy)
-						 .ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory()).AddHttpMessageHandler(GetRateLimiterHandler)
+		serviceCollection.AddHttpClient(Constants.UnOfficialApiHttpClientName, client =>
+						{
+							client.Timeout = TimeSpan.FromSeconds(120L);
+							client.DefaultRequestHeaders.UserAgent.Clear();
+							client.DefaultRequestHeaders.UserAgent.ParseAdd(Constants.UserAgent);
+						}).ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory()).AddResilienceHandler("parser-mal", (builder, rbc) =>
+						{
+							builder.AddRetry(new HttpRetryStrategyOptions
+							{
+								MaxRetryAttempts = malHttpRetries,
+							});
+
+							var rateLimiter = rbc.ServiceProvider.GetRequiredService<RateLimiter<IMyAnimeListClient>>();
+							builder.AddRateLimiter(rateLimiter);
+						});
+		serviceCollection.AddHttpClient(Constants.OfficialApiHttpClientName).ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory())
 						 .ConfigureHttpClient((provider, client) =>
 						 {
 							 var options = provider.GetRequiredService<IOptions<MalOptions>>().Value;
 							 client.DefaultRequestHeaders.Add(Constants.OfficialApiHeaderName, options.ClientId);
+						 }).AddResilienceHandler("official-mal", (builder, rbc) =>
+						 {
+							 builder.AddRetry(new HttpRetryStrategyOptions
+							 {
+								 MaxRetryAttempts = malHttpRetries,
+							 });
+
+							 var rateLimiter = rbc.ServiceProvider.GetRequiredService<RateLimiter<IMyAnimeListClient>>();
+							 builder.AddRateLimiter(rateLimiter);
 						 });
-		serviceCollection.AddHttpClient(Constants.JikanHttpClientName).AddPolicyHandler(retryPolicy)
-						 .ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory()).AddHttpMessageHandler(_ =>
+		serviceCollection.AddHttpClient(Constants.JikanHttpClientName, client => client.BaseAddress = new(Constants.JikanApiUrl))
+						 .ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory())
+						 .AddResilienceHandler("jikan", builder =>
 						 {
-							 var rl = new RateLimitValue(60, TimeSpan.FromMinutes(1, 12)); // 60rpm with 0.2 as inaccuracy
-							 return RateLimiterFactory.Create<IJikan>(rl).ToHttpMessageHandler();
-						 }).AddHttpMessageHandler(_ =>
-						 {
-							 var rl = new RateLimitValue(3, TimeSpan.FromSeconds(1, 500)); // 3rps with 0.5 as inaccuracy
-							 return RateLimiterFactory.Create<IJikan>(rl).ToHttpMessageHandler();
-						 })
-						 .ConfigureHttpClient(client => client.BaseAddress = new(Constants.JikanApiUrl));
+							 var rpmRl = new RateLimitValue(60, TimeSpan.FromMinutes(1, 12)); // 60rpm with 0.2 as inaccuracy
+							 builder.AddRateLimiter(RateLimiterFactory.Create<IJikan>(rpmRl));
+
+							 var rpsRl = new RateLimitValue(3, TimeSpan.FromSeconds(1, 500)); // 3rps with 0.5 as inaccuracy
+							 builder.AddRateLimiter(RateLimiterFactory.Create<IJikan>(rpsRl));
+						 });
+
 		serviceCollection.AddSingleton<IJikan>(provider => new Jikan(
 			new()
 			{
@@ -88,7 +101,4 @@ public static class ServiceCollectionExtensions
 		CookieContainer = new(),
 		PooledConnectionLifetime = TimeSpan.FromMinutes(15),
 	};
-
-	private static RateLimiterHttpMessageHandler GetRateLimiterHandler(IServiceProvider provider) =>
-		provider.GetRequiredService<RateLimiter<IMyAnimeListClient>>().ToHttpMessageHandler();
 }

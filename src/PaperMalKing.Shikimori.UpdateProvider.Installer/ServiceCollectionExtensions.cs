@@ -2,9 +2,9 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System;
-using System.Net;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PaperMalKing.Common.RateLimiters;
@@ -15,8 +15,6 @@ using PaperMalKing.Shikimori.Wrapper.Abstractions;
 using PaperMalKing.UpdatesProviders.Base.Features;
 using PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 using Polly;
-using Polly.Contrib.WaitAndRetry;
-using Polly.Extensions.Http;
 
 namespace PaperMalKing.Shikimori.UpdateProvider.Installer;
 
@@ -26,26 +24,30 @@ public static class ServiceCollectionExtensions
 	{
 		serviceCollection.AddOptions<ShikiOptions>().BindConfiguration(Constants.Name).ValidateDataAnnotations().ValidateOnStart();
 
-		var policy = HttpPolicyExtensions.HandleTransientHttpError().OrResult(message => message.StatusCode == HttpStatusCode.TooManyRequests)
-										 .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(10), 5));
-
-		serviceCollection.AddHttpClient(Constants.Name).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
-		{
-			PooledConnectionLifetime = TimeSpan.FromMinutes(15),
-		}).AddPolicyHandler(policy).AddHttpMessageHandler(_ =>
-		{
-			var rl = new RateLimitValue(50, TimeSpan.FromMinutes(1, 5)); // 90rpm with .05 as inaccuracy
-			return RateLimiterFactory.Create<ShikiClient>(rl).ToHttpMessageHandler();
-		}).AddHttpMessageHandler(_ =>
-		{
-			var rl = new RateLimitValue(3, TimeSpan.FromSeconds(1, 200)); // 5rps with .05 as inaccuracy
-			return RateLimiterFactory.Create<ShikiClient>(rl).ToHttpMessageHandler();
-		}).ConfigureHttpClient((provider, client) =>
+		serviceCollection.AddHttpClient(Constants.Name).ConfigureHttpClient((provider, client) =>
 		{
 			client.DefaultRequestHeaders.UserAgent.Clear();
 			client.DefaultRequestHeaders.UserAgent.ParseAdd(provider.GetRequiredService<IOptions<ShikiOptions>>().Value.ShikimoriAppName);
 			client.BaseAddress = new(Wrapper.Abstractions.Constants.BaseUrl);
+		}).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+		{
+			PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+		}).AddResilienceHandler("shiki", builder =>
+		{
+			const int shikiHttpRetryAttempts = 5;
+
+			builder.AddRetry(new HttpRetryStrategyOptions
+			{
+				MaxRetryAttempts = shikiHttpRetryAttempts,
+			});
+
+			var rpmRl = new RateLimitValue(50, TimeSpan.FromMinutes(1, 5)); // 90rpm with .05 as inaccuracy
+			builder.AddRateLimiter(RateLimiterFactory.Create<ShikiClient>(rpmRl));
+
+			var rpsRl = new RateLimitValue(3, TimeSpan.FromSeconds(1, 200)); // 5rps with .05 as inaccuracy
+			builder.AddRateLimiter(RateLimiterFactory.Create<ShikiClient>(rpsRl));
 		});
+
 		serviceCollection.AddSingleton<IShikiClient, ShikiClient>(provider =>
 		{
 			var factory = provider.GetRequiredService<IHttpClientFactory>();

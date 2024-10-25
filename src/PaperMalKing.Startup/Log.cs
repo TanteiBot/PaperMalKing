@@ -34,7 +34,9 @@ internal static partial class Log
 	public static partial void FinishingUserCleanup(this ILogger<UserCleanupService> logger);
 
 	[LoggerMessage(LogLevel.Warning, "Posting update to {Channel} - {@Embed}")]
-	public static partial void PostingUpdate(this ILogger<UpdatePoster> logger, DiscordChannel channel, DiscordEmbed embed);
+#pragma warning disable EXTEXP0003
+	public static partial void PostingUpdate(this ILogger<UpdatePoster> logger, DiscordChannel channel, [LogProperties(Transitive = true)] DiscordEmbed embed);
+#pragma warning restore EXTEXP0003
 
 	[LoggerMessage(LogLevel.Debug, "{Command} was successfully executed by request of {Member}")]
 	public static partial void CommandSuccessfullyExecuted(this ILogger<CommandsService> logger, string command, DiscordMember member);

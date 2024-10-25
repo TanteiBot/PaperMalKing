@@ -77,6 +77,10 @@ public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
 				this.Logger.StartCheckingForUpdates(this.Name);
 				await this.CheckForUpdatesAsync(stoppingToken);
 			}
+			catch (TimeoutException)
+			{
+				this.Logger.UpdateProviderApiTimedOut();
+			}
 			catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
 			{
 				// Ignore

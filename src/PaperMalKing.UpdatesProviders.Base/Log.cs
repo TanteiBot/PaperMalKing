@@ -23,6 +23,9 @@ public static partial class Log
 	[LoggerMessage(LogLevel.Information, "Ended checking for updates in {Name} updates provider. Next planned update check is in {DelayBetweenTimerFires}")]
 	internal static partial void EndCheckingForUpdates(this ILogger<BaseUpdateProvider> logger, string name, TimeSpan delayBetweenTimerFires);
 
+	[LoggerMessage(LogLevel.Error, "Update provider's API timed out")]
+	public static partial void UpdateProviderApiTimedOut(this ILogger<BaseUpdateProvider> logger);
+
 	[LoggerMessage(LogLevel.Information, "Trying to add {ProviderUsername} {Member} to {Name} update provider")]
 	internal static partial void StartAddingUser(this ILogger<BotCommandsModule> logger, string? providerUsername, DiscordMember member, string name);
 
