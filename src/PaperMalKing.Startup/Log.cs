@@ -44,6 +44,9 @@ internal static partial class Log
 	[LoggerMessage(LogLevel.Error, "{Command} errored with exception while trying to be executed by {Member}")]
 	public static partial void CommandErrored(this ILogger<CommandsService> logger, Exception ex, string command, DiscordMember member);
 
+	[LoggerMessage(LogLevel.Warning, "{Command} errored with exception that may be part of normal flow while trying to be executed by {Member}")]
+	public static partial void UserFacingCommandErrored(this ILogger<CommandsService> logger, Exception ex, string command, DiscordMember member);
+
 	[LoggerMessage(LogLevel.Information, "Updating channel of {Guild} from {CurrentChannelId} to {NewChannelId}")]
 	public static partial void UpdatingChannel(this ILogger<GuildManagementService> logger, DiscordGuild guild, ulong currentChannelId,
 											   ulong newChannelId);
