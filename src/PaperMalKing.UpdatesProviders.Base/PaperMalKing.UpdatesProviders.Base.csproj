@@ -8,6 +8,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Humanizer.Core" />
         <PackageReference Include="Microsoft.VisualStudio.Threading" />
+        <PackageReference Include="Microsoft.Extensions.Telemetry.Abstractions" />
         <ProjectReference Include="..\PaperMalKing.Common\PaperMalKing.Common.csproj" />
         <ProjectReference Include="..\PaperMalKing.Database\PaperMalKing.Database.csproj" />
     </ItemGroup>

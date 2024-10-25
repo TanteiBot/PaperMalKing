@@ -14,4 +14,6 @@ public sealed class BotUser
 	public uint UserId { get; internal init; }
 
 	public DiscordUser? DiscordUser { get; init; }
+
+	public override string ToString() => $"{nameof(this.UserId)}: {this.UserId}";
 }

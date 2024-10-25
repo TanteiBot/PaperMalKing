@@ -80,6 +80,7 @@ public static class HostBuilderExtensions
 			services.AddSingleton<IExecuteOnStartupService, MigrateOnStartupService>();
 
 			services.AddOptions<DiscordOptions>().BindConfiguration(DiscordOptions.Discord).ValidateDataAnnotations().ValidateOnStart();
+			services.AddResilienceEnricher();
 			services.AddSingleton<DiscordClient>(provider =>
 			{
 				var options = provider.GetRequiredService<IOptions<DiscordOptions>>();

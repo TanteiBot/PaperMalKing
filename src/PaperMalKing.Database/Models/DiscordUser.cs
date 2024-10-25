@@ -22,4 +22,8 @@ public sealed class DiscordUser
 	public required BotUser BotUser { get; set; }
 
 	public required IList<DiscordGuild> Guilds { get; init; }
+
+#pragma warning disable S103
+	public override string ToString() => $"{nameof(this.BotUserId)}: {this.BotUserId}, {nameof(this.DiscordUserId)}: {this.DiscordUserId}, {nameof(this.BotUser)}: {this.BotUser}, {nameof(this.Guilds)}: {this.Guilds}";
+#pragma warning restore S103
 }

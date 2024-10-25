@@ -9,10 +9,17 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DebugType>portable</DebugType>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <AnalysisLevel>10</AnalysisLevel>
+        <AnalysisLevel>preview</AnalysisLevel>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisMode>All</AnalysisMode>
+        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
+        <ApiCompatStrictMode>true</ApiCompatStrictMode>
+        <ApiCompatValidateAssemblies>true</ApiCompatValidateAssemblies>
+        <EnablePackageValidation>true</EnablePackageValidation>
+        <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
         <NuGetAudit>true</NuGetAudit>
         <NuGetAuditLevel>low</NuGetAuditLevel>
         <NuGetAuditMode>all</NuGetAuditMode>
@@ -127,10 +134,12 @@
     <Choose>
         <When Condition="'$(Configuration)' == 'Debug'">
             <PropertyGroup>
+                <EnablePreviewFeatures>true</EnablePreviewFeatures>
                 <WarningsNotAsErrors>$(WarningsNotAsErrors);
                     CA1031; <!--Modify to catch a more specific allowed exception type, or rethrow the exception-->
                     CA1822;
                     CS0168; <!--The variable is declared but never used-->
+                    CS9113; <!--Parameter is unread. -->
 
                     ERP022; <!--An exit point swallows an unobserved exception-->
                     

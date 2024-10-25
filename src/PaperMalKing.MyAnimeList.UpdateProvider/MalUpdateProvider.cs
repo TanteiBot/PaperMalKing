@@ -108,6 +108,11 @@ internal sealed class MalUpdateProvider(ILogger<MalUpdateProvider> logger, IOpti
 				this.Logger.MalServerError(exception);
 				return;
 			}
+			catch (TimeoutException)
+			{
+				this.Logger.UpdateProviderApiTimedOut();
+				return;
+			}
 			catch (OperationCanceledException) when (perUserCancellationToken.IsCancellationRequested)
 			{
 				// Ignore we were canceled

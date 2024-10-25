@@ -76,6 +76,11 @@ internal sealed class AniListUpdateProvider(ILogger<AniListUpdateProvider> logge
 			{
 				continue;
 			}
+			catch (TimeoutException)
+			{
+				this.Logger.UpdateProviderApiTimedOut();
+				return;
+			}
 
 			var isFavouritesHashMismatch = !dbUser.FavouritesIdHash.Equals(HashHelpers.FavoritesHash(recentUserUpdates.Favourites.ToFavoriteIdType()), StringComparison.Ordinal);
 
