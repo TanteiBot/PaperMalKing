@@ -11,6 +11,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using Microsoft.Extensions.Logging;
 using PaperMalKing.Common;
+using PaperMalKing.Common.Exceptions;
 using PaperMalKing.UpdatesProviders.Base;
 
 namespace PaperMalKing.Startup.Services;
@@ -73,7 +74,15 @@ internal sealed class CommandsService : ICommandsService
 
 	private Task SlashCommandsExtensionOnSlashCommandErroredAsync(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
 	{
-		this._logger.CommandErrored(e.Exception, e.Context.CommandName, e.Context.Member);
+		if (e.Exception is UserFacingException)
+		{
+			this._logger.UserFacingCommandErrored(e.Exception, e.Context.CommandName, e.Context.Member);
+		}
+		else
+		{
+			this._logger.CommandErrored(e.Exception, e.Context.CommandName, e.Context.Member);
+		}
+
 		return Task.CompletedTask;
 	}
 }
