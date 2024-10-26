@@ -133,6 +133,7 @@ dotnet_analyzer_diagnostic.category-CodeQuality.severity = error
 dotnet_analyzer_diagnostic.category-Style.severity = error
 dotnet_diagnostic.IDE0046.severity = suggestion
 dotnet_diagnostic.IDE0072.severity = suggestion
+dotnet_diagnostic.MA0165.severity = none
 
 dotnet_code_quality.api_surface = all
 #required_modifiers.required_modifiers = none
