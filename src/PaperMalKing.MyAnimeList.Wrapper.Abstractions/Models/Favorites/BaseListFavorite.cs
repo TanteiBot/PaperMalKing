@@ -14,7 +14,7 @@ public class BaseListFavorite(string type, ushort startYear, MalUrl url, string 
 	{
 	}
 
-	public BaseListFavorite(BaseListFavorite other)
+	protected BaseListFavorite(BaseListFavorite other)
 		: this(other.Type, other.StartYear, other.Url, other.Name, other.ImageUrl)
 	{
 	}

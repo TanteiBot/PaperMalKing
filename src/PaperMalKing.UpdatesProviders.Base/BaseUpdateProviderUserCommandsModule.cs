@@ -13,74 +13,65 @@ using PaperMalKing.UpdatesProviders.Base.Exceptions;
 
 namespace PaperMalKing.UpdatesProviders.Base;
 
-public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserService, TUser> : BotCommandsModule
+public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserService, TUser>
+	(TUpdateProviderUserService userService, ILogger<BaseUpdateProviderUserCommandsModule<TUpdateProviderUserService, TUser>> logger) : BotCommandsModule
 	where TUpdateProviderUserService : BaseUpdateProviderUserService<TUser>
 	where TUser : class, IUpdateProviderUser
 {
-	protected ILogger<BaseUpdateProviderUserCommandsModule<TUpdateProviderUserService, TUser>> Logger { get; }
-
-	protected TUpdateProviderUserService UserService { get; }
-
 	protected override bool IsResponseVisibleOnlyForRequester => false;
-
-	protected BaseUpdateProviderUserCommandsModule(TUpdateProviderUserService userService, ILogger<BaseUpdateProviderUserCommandsModule<TUpdateProviderUserService, TUser>> logger)
-	{
-		this.UserService = userService;
-		this.Logger = logger;
-	}
 
 	public virtual async Task AddUserCommand(InteractionContext context, string? username = null)
 	{
-		using var scope = this.Logger.AddUserScope(username);
-		this.Logger.StartAddingUser(username, context.Member, this.UserService.Name);
+		using var scope = logger.AddUserScope(username);
+		logger.StartAddingUser(username, context.Member, userService.Name);
 		BaseUser user;
 
 		try
 		{
-			user = await this.UserService.AddUserAsync(context.Member!.Id, context.Member.Guild.Id, username);
+			user = await userService.AddUserAsync(context.Member!.Id, context.Member.Guild.Id, username);
 		}
 		catch (Exception ex)
 		{
 			var embed = ex is UserProcessingException ? EmbedTemplate.ErrorEmbed(ex.GetFullMessage()) : EmbedTemplate.UnknownErrorEmbed;
 			await context.EditResponseAsync(embed: embed);
-			this.Logger.FailAddingUser(ex, username, context.Member, this.UserService.Name);
+			logger.FailAddingUser(ex, username, context.Member, userService.Name);
 			throw;
 		}
 
-		this.Logger.SuccessfullyAddedUser(username, context.Member, this.UserService.Name);
+		logger.SuccessfullyAddedUser(username, context.Member, userService.Name);
 
-		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed($"Successfully added {user.Username} to {this.UserService.Name} update checker"));
+		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed($"Successfully added {user.Username} to {userService.Name} update checker"));
 	}
 
 	public virtual async Task RemoveUserCommand(InteractionContext context)
 	{
-		using var scope = this.Logger.RemoveUserScope(context.Member.DisplayName);
-		this.Logger.StartRemovingUser(context.Member, this.UserService.Name);
+		using var scope = logger.RemoveUserScope(context.Member.DisplayName);
+		logger.StartRemovingUser(context.Member, userService.Name);
 
 		try
 		{
-			this.UserService.RemoveUser(context.User.Id);
+			userService.RemoveUser(context.User.Id);
 		}
 		catch (Exception ex)
 		{
 			var embed = ex is UserProcessingException ? EmbedTemplate.ErrorEmbed(ex.GetFullMessage()) : EmbedTemplate.UnknownErrorEmbed;
 			await context.EditResponseAsync(embed: embed);
-			this.Logger.FailRemovingUser(ex, context.Member, this.UserService.Name);
+			logger.FailRemovingUser(ex, context.Member, userService.Name);
 
 			throw;
 		}
 
-		this.Logger.SuccessfullyRemovedUser(context.Member, this.UserService.Name);
+		logger.SuccessfullyRemovedUser(context.Member, userService.Name);
 
-		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed($"Successfully removed yourself from {this.UserService.Name} update checker"));
+		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed($"Successfully removed yourself from {userService.Name} update checker"));
 	}
 
 	public virtual async Task RemoveUserHereCommand(InteractionContext context)
 	{
-		using var scope = this.Logger.RemoveUserInGuildScope(context.User.Username, context.Guild.Name);
+		using var scope = logger.RemoveUserInGuildScope(context.User.Username, context.Guild.Name);
 		try
 		{
-			await this.UserService.RemoveUserHereAsync(context.User.Id, context.Guild.Id);
+			await userService.RemoveUserHereAsync(context.User.Id, context.Guild.Id);
 		}
 		catch (Exception ex)
 		{
@@ -99,7 +90,7 @@ public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserSe
 		try
 		{
 			var i = 1;
-			foreach (var user in this.UserService.ListUsers(context.Guild.Id))
+			foreach (var user in userService.ListUsers(context.Guild.Id))
 			{
 				if (sb.Length + user.Username.Length <= discordDescriptionLimit)
 				{

@@ -17,9 +17,9 @@ namespace PaperMalKing.Common.Json;
 /// </summary>
 public sealed class StringPoolingJsonConverter : JsonConverter<string>
 {
-	private static readonly HashSet<string> StringPool = new(StringComparer.Ordinal);
+	private const int MaxLengthLimit = 256;
 
-	public const int MaxLengthLimit = 256;
+	private static readonly HashSet<string> StringPool = new(StringComparer.Ordinal);
 
 	public static string ReadStringOrGetFromPool(ref Utf8JsonReader reader) => ReadStringOrGetFromPool(ref reader, StringPool, readerWriterLock: null);
 

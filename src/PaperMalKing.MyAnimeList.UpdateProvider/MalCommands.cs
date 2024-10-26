@@ -47,10 +47,7 @@ internal sealed class MalCommands : ApplicationCommandModule
 		public override Task EnableFeatureCommand(InteractionContext context,
 			[ChoiceProvider(typeof(EnumChoiceProvider<FeaturesChoiceProvider<MalUserFeatures>, MalUserFeatures>)),
 			Option("feature", "Feature to enable")]
-			string unparsedFeature)
-		{
-			return base.EnableFeatureCommand(context, unparsedFeature);
-		}
+			string unparsedFeature) => base.EnableFeatureCommand(context, unparsedFeature);
 
 		[SlashCommand("disable", "Disable features for your updates")]
 		public override Task DisableFeatureCommand(InteractionContext context,
@@ -73,7 +70,7 @@ internal sealed class MalCommands : ApplicationCommandModule
 		[SlashCommand("set", "Set color for update update")]
 		public override Task SetColor(InteractionContext context,
 									  [ChoiceProvider(typeof(EnumChoiceProvider<ColorsChoiceProvider<MalUpdateType>, MalUpdateType>)), Option("updateType", "Type of update to set color for")] string unparsedUpdateType,
-									  [Option("color", "Color code in hex like #FFFFFF")] string colorValue) => Task.FromResult(base.SetColor(context, unparsedUpdateType, colorValue));
+									  [Option("color", "Color code in hex like #FFFFFF")] string colorValue) => base.SetColor(context, unparsedUpdateType, colorValue);
 
 		[SlashCommand("remove", "Restore default color for update type")]
 		public override Task RemoveColor(InteractionContext context, [ChoiceProvider(typeof(EnumChoiceProvider<ColorsChoiceProvider<MalUpdateType>, MalUpdateType>)),

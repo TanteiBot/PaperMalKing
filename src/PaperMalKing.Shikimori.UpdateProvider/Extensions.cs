@@ -55,7 +55,7 @@ internal static partial class Extensions
 	private static readonly FrozenSet<string> MangakaRelatedRoles = new[] { "story", "art", "creator", "design" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 	private static readonly CultureInfo RuCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-	public static DiscordEmbedBuilder WithShikiAuthor(this DiscordEmbedBuilder builder, UserInfo user) =>
+	private static DiscordEmbedBuilder WithShikiAuthor(this DiscordEmbedBuilder builder, UserInfo user) =>
 		builder.WithAuthor(user.Nickname, user.Url, user.ImageUrl);
 
 	public static async Task<IReadOnlyList<History>> GetAllUserHistoryAfterEntryAsync(this IShikiClient client, uint userId,
@@ -273,12 +273,12 @@ internal static partial class Extensions
 		return eb;
 	}
 
-	public static string GetNameOrAltName(this IMultiLanguageName namedEntity, ShikiUserFeatures features) =>
+	private static string GetNameOrAltName(this IMultiLanguageName namedEntity, ShikiUserFeatures features) =>
 		GetNameOrAltName(namedEntity, features.HasFlag(ShikiUserFeatures.Russian));
 
-	public static string GetNameOrAltName(this IMultiLanguageName namedEntity, bool useRussianAsMain)
+	private static string GetNameOrAltName(this IMultiLanguageName namedEntity, bool useRussianAsMain)
 	{
-		(var mainLang, var secondaryLang) = useRussianAsMain ? (namedEntity.RussianName, namedEntity.Name) : (namedEntity.Name, namedEntity.RussianName);
+		var (mainLang, secondaryLang) = useRussianAsMain ? (namedEntity.RussianName, namedEntity.Name) : (namedEntity.Name, namedEntity.RussianName);
 
 		return string.IsNullOrWhiteSpace(mainLang) ? secondaryLang! : mainLang;
 	}
