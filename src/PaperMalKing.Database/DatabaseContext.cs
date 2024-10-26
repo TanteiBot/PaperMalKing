@@ -54,7 +54,7 @@ public sealed class DatabaseContext(DbContextOptions<DatabaseContext> options) :
 		}
 	}
 
-	public async Task<int> TrySaveChangesUntilDatabaseIsUnlockedAsync(CancellationToken cancellationToken = default)
+	private async Task<int> TrySaveChangesUntilDatabaseIsUnlockedAsync(CancellationToken cancellationToken = default)
 	{
 		const int sqliteBusyCode = 5; // https://www.sqlite.org/rescode.html#busy
 		while (!cancellationToken.IsCancellationRequested)

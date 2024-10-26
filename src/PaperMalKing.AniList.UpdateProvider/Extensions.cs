@@ -105,7 +105,7 @@ internal static partial class Extensions
 		return result;
 	}
 
-	public static string? GetEmbedFormat(this Media media)
+	private static string? GetEmbedFormat(this Media media)
 	{
 		static string? DefaultFormatting(Media media) => media.Format?.Humanize(LetterCasing.Sentence);
 

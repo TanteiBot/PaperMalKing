@@ -11,7 +11,7 @@ public class BaseFavorite(MalUrl url, string name, string? imageUrl)
 
 	public string? ImageUrl { get; init; } = imageUrl;
 
-	public BaseFavorite(BaseFavorite other)
+	protected BaseFavorite(BaseFavorite other)
 		: this(other.Url, other.Name, other.ImageUrl)
 	{
 	}
