@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using DSharpPlus.Entities;
 
 namespace PaperMalKing.Common;
 
@@ -81,5 +83,24 @@ public static partial class TypeExtensions
 				break;
 			}
 		}
+	}
+
+	public static string GetFullCommandName(this DiscordInteractionData data)
+	{
+		static IEnumerable<string> GetNames(DiscordInteractionData data)
+		{
+			yield return data.Name;
+
+			var opt = data.Options.FirstOrDefault();
+
+			while (opt != null)
+			{
+				yield return opt.Name;
+
+				opt = opt.Options.FirstOrDefault();
+			}
+		}
+
+		return GetNames(data).JoinToString(' ');
 	}
 }

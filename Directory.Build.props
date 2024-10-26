@@ -3,33 +3,39 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <OutputType>Library</OutputType>
-        <Nullable>enable</Nullable>
-        <WarningsAsErrors>nullable</WarningsAsErrors>
-        <Features>strict</Features>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        
+        <!-- Debug -->
         <DebugType>portable</DebugType>
-        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <AnalysisLevel>preview</AnalysisLevel>
-        <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <AnalysisMode>All</AnalysisMode>
-        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+        
+        <!-- GitVersion -->
+        <GitVersion_NoFetchEnabled>true</GitVersion_NoFetchEnabled>
+        <GitVersionTargetFramework>net8.0</GitVersionTargetFramework>
+
+        <!-- Nuget -->
+        <NuGetAudit>true</NuGetAudit>
+        <NuGetAuditLevel>low</NuGetAuditLevel>
+        <NuGetAuditMode>all</NuGetAuditMode>
+        
+        <!-- Misc -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
         <ApiCompatStrictMode>true</ApiCompatStrictMode>
         <ApiCompatValidateAssemblies>true</ApiCompatValidateAssemblies>
         <EnablePackageValidation>true</EnablePackageValidation>
-        <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
-        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
-        <NuGetAudit>true</NuGetAudit>
-        <NuGetAuditLevel>low</NuGetAuditLevel>
-        <NuGetAuditMode>all</NuGetAuditMode>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-        <GitVersion_NoFetchEnabled>true</GitVersion_NoFetchEnabled>
-        <GitVersionTargetFramework>net8.0</GitVersionTargetFramework>
-        <NuGetAudit>true</NuGetAudit>
-        <NuGetAuditLevel>low</NuGetAuditLevel>
-        <NuGetAuditMode>all</NuGetAuditMode>
+        
+        <!-- Lint -->
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>nullable</WarningsAsErrors>
+        <Features>strict</Features>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <AnalysisLevel>preview</AnalysisLevel>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisMode>All</AnalysisMode>
+        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
         <NoWarn>$(NoWarn);
             CS1591; <!--Missing XML comment for publicly visible type or member-->
             
