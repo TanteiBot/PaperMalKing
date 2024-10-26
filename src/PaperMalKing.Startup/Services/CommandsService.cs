@@ -68,7 +68,7 @@ internal sealed class CommandsService : ICommandsService
 
 	private Task SlashCommandsExtensionOnSlashCommandExecutedAsync(SlashCommandsExtension sender, SlashCommandExecutedEventArgs e)
 	{
-		this._logger.CommandSuccessfullyExecuted(e.Context.CommandName, e.Context.Member);
+		this._logger.CommandSuccessfullyExecuted(e.Context.Interaction.Data.GetFullCommandName(), e.Context.Member);
 		return Task.CompletedTask;
 	}
 
@@ -76,11 +76,11 @@ internal sealed class CommandsService : ICommandsService
 	{
 		if (e.Exception is UserFacingException)
 		{
-			this._logger.UserFacingCommandErrored(e.Exception, e.Context.CommandName, e.Context.Member);
+			this._logger.UserFacingCommandErrored(e.Exception, e.Context.Interaction.Data.GetFullCommandName(), e.Context.Member);
 		}
 		else
 		{
-			this._logger.CommandErrored(e.Exception, e.Context.CommandName, e.Context.Member);
+			this._logger.CommandErrored(e.Exception, e.Context.Interaction.Data.GetFullCommandName(), e.Context.Member);
 		}
 
 		return Task.CompletedTask;
