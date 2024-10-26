@@ -55,8 +55,14 @@ public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
 
 		var rts = this._restartTokenSource;
 
-		this._restartTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-		rts.Dispose();
+		try
+		{
+			this._restartTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+		}
+		finally
+		{
+			rts.Dispose();
+		}
 
 		while (!stoppingToken.IsCancellationRequested)
 		{
