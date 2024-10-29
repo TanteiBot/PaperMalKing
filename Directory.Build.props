@@ -155,16 +155,21 @@
                     IDE0060; <!--Remove unused parameter -->
 
                     S125; <!--Remove this commented out code.-->
+                    S3235; <!--Remove these redundant parentheses.-->
                     S1144; <!--Remove the unused private method-->
                     S1172; <!--Remove this unused method parameter-->
 
                     RCS1163; <!--Unused parameter-->
                     RCS1188; <!--Remove redundant auto-property initialization-->
                     RCS1213; <!--Remove unused method declaration-->
-
+                    
                     SA1027; <!--Tabs and spaces should be used correctly-->
                     SA1101; <!--Prefix local calls with this-->
+                    SA1404; <!--Code analysis suppression should have justification-->
+                    SA1413; <!--Use trailing comma in multi-line initializers-->
                     SA1512; <!--Single-line comments should not be followed by blank line-->
+
+                    MA0007; <!--Add comma after the last value-->
 
                     NU1901; <!-- Package has a known low severity vulnerability -->
                     NU1902; <!-- Package has a known low moderate vulnerability -->
