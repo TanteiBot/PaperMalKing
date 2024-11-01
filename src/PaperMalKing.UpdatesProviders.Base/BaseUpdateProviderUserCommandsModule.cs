@@ -22,6 +22,8 @@ public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserSe
 
 	public virtual async Task AddUserCommand(InteractionContext context, string? username = null)
 	{
+		using var logScope = CreateLoggerScope(logger, context);
+
 		using var scope = logger.AddUserScope(username);
 		logger.StartAddingUser(username, context.Member, userService.Name);
 		BaseUser user;
@@ -45,6 +47,8 @@ public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserSe
 
 	public virtual async Task RemoveUserCommand(InteractionContext context)
 	{
+		using var logScope = CreateLoggerScope(logger, context);
+
 		using var scope = logger.RemoveUserScope(context.Member.DisplayName);
 		logger.StartRemovingUser(context.Member, userService.Name);
 
@@ -68,6 +72,7 @@ public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserSe
 
 	public virtual async Task RemoveUserHereCommand(InteractionContext context)
 	{
+		using var logScope = CreateLoggerScope(logger, context);
 		using var scope = logger.RemoveUserInGuildScope(context.User.Username, context.Guild.Name);
 		try
 		{
@@ -85,6 +90,7 @@ public abstract class BaseUpdateProviderUserCommandsModule<TUpdateProviderUserSe
 
 	public virtual async Task ListUsersCommand(InteractionContext context)
 	{
+		using var logScope = CreateLoggerScope(logger, context);
 		const int discordDescriptionLimit = 2048;
 		var sb = new StringBuilder();
 		try

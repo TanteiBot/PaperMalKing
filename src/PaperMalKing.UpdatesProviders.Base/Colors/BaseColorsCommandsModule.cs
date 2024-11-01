@@ -21,12 +21,13 @@ public abstract class BaseColorsCommandsModule<TUser, TUpdateType>
 
 	public virtual async Task SetColor(InteractionContext context, string unparsedUpdateType, string colorValue)
 	{
-		TUpdateType updateType;
+		using var scope = CreateLoggerScope(logger, context);
 		try
 		{
 			var color = new DiscordColor(colorValue);
-			updateType = UpdateTypesHelper<TUpdateType>.Parse(unparsedUpdateType);
+			var updateType = UpdateTypesHelper<TUpdateType>.Parse(unparsedUpdateType);
 			await colorService.SetColorAsync(context.User.Id, updateType, color);
+			await context.EditResponseAsync(EmbedTemplate.SuccessEmbed($"Successfully set color of {updateType}"));
 		}
 		catch (Exception ex)
 		{
@@ -35,17 +36,16 @@ public abstract class BaseColorsCommandsModule<TUser, TUpdateType>
 			logger.FailedToSetColor(ex, unparsedUpdateType, colorValue);
 			throw;
 		}
-
-		await context.EditResponseAsync(EmbedTemplate.SuccessEmbed($"Successfully set color of {updateType}"));
 	}
 
 	public virtual async Task RemoveColor(InteractionContext context, string unparsedUpdateType)
 	{
-		TUpdateType updateType;
+		using var scope = CreateLoggerScope(logger, context);
 		try
 		{
-			updateType = UpdateTypesHelper<TUpdateType>.Parse(unparsedUpdateType);
+			var updateType = UpdateTypesHelper<TUpdateType>.Parse(unparsedUpdateType);
 			await colorService.RemoveColorAsync(context.User.Id, updateType);
+			await context.EditResponseAsync(EmbedTemplate.SuccessEmbed($"Successfully removed color of {updateType}"));
 		}
 		catch (Exception ex)
 		{
@@ -54,14 +54,13 @@ public abstract class BaseColorsCommandsModule<TUser, TUpdateType>
 			logger.FailedToRemoveColor(ex, unparsedUpdateType);
 			throw;
 		}
-
-		await context.EditResponseAsync(EmbedTemplate.SuccessEmbed($"Successfully removed color of {updateType}"));
 	}
 
-	public virtual Task<DiscordMessage> ListOverridenColor(InteractionContext context)
+	public virtual async Task ListOverridenColor(InteractionContext context)
 	{
+		using var scope = CreateLoggerScope(logger, context);
 		var colors = colorService.OverridenColors(context.User.Id);
-		return context.EditResponseAsync(EmbedTemplate
+		await context.EditResponseAsync(EmbedTemplate
 										 .SuccessEmbed(string.IsNullOrWhiteSpace(colors) ? "You have no colors overriden" : "Your overriden colors")
 										 .WithDescription(colors));
 	}

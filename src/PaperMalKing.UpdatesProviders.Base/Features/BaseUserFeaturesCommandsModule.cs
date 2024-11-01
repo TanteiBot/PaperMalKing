@@ -22,6 +22,7 @@ public abstract class BaseUserFeaturesCommandsModule<TUser, TFeature>
 
 	public virtual async Task EnableFeatureCommand(InteractionContext context, string unparsedFeature)
 	{
+		using var scope = CreateLoggerScope(logger, context);
 		var feature = FeaturesHelper<TFeature>.Parse(unparsedFeature);
 
 		logger.TryingToEnableFeature(feature, context.Member!.DisplayName);
@@ -45,6 +46,8 @@ public abstract class BaseUserFeaturesCommandsModule<TUser, TFeature>
 
 	public virtual async Task DisableFeatureCommand(InteractionContext context, string unparsedFeature)
 	{
+		using var scope = CreateLoggerScope(logger, context);
+
 		var feature = FeaturesHelper<TFeature>.Parse(unparsedFeature);
 		logger.TryingToDisableFeature(feature, context.Member!.DisplayName);
 		try
@@ -65,12 +68,20 @@ public abstract class BaseUserFeaturesCommandsModule<TUser, TFeature>
 		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed($"Successfully disabled {feature.Humanize()} for you"));
 	}
 
-	public virtual Task ListFeaturesCommand(InteractionContext context) => context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed("All features")
-		.WithDescription(FeaturesHelper<TFeature>.Features.Select(x => $"[{x.Description}] - {x.Summary}").JoinToString(";\n")));
-
-	public virtual Task EnabledFeaturesCommand(InteractionContext context)
+	public virtual async Task ListFeaturesCommand(InteractionContext context)
 	{
+		using var scope = CreateLoggerScope(logger, context);
+
+		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed("All features")
+															 .WithDescription(FeaturesHelper<TFeature>.Features
+																 .Select(x => $"[{x.Description}] - {x.Summary}").JoinToString(";\n")));
+	}
+
+	public virtual async Task EnabledFeaturesCommand(InteractionContext context)
+	{
+		using var scope = CreateLoggerScope(logger, context);
+
 		var featuresDesc = userFeaturesService.EnabledFeatures(context.User.Id);
-		return context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed("Your enabled features").WithDescription(featuresDesc));
+		await context.EditResponseAsync(embed: EmbedTemplate.SuccessEmbed("Your enabled features").WithDescription(featuresDesc));
 	}
 }
