@@ -11,6 +11,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
+using Microsoft.Extensions.Logging;
 using PaperMalKing.Common;
 using PaperMalKing.Common.Attributes;
 
@@ -19,7 +20,7 @@ namespace PaperMalKing.Startup.Commands;
 [SlashModuleLifespan(SlashModuleLifespan.Singleton)]
 [GuildOnly]
 [SlashRequireGuild]
-internal sealed class UngroupedCommands : BotCommandsModule
+internal sealed class UngroupedCommands(ILogger<UngroupedCommands> logger) : BotCommandsModule
 {
 	private static DiscordEmbed? _aboutEmbed;
 
@@ -32,6 +33,7 @@ internal sealed class UngroupedCommands : BotCommandsModule
 		[Option("channel", "Channel where the embed will be send")] DiscordChannel channelToSayIn,
 		[Option("text", "Text to send")] string messageContent)
 	{
+		using var scope = CreateLoggerScope(logger, context);
 		if (string.IsNullOrWhiteSpace(messageContent))
 		{
 			await context.EditResponseAsync(embed: EmbedTemplate.ErrorEmbed("Message's content shouldn't be empty"));
@@ -62,11 +64,12 @@ internal sealed class UngroupedCommands : BotCommandsModule
 
 	[SlashCommand("About", "Displays info about bot")]
 	[SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:Parameter should not span multiple lines", Justification = "We format versions in multi-line string")]
-	public Task<DiscordMessage> AboutCommand(InteractionContext context)
+	public async Task AboutCommand(InteractionContext context)
 	{
+		using var scope = CreateLoggerScope(logger, context);
 		if (_aboutEmbed is not null)
 		{
-			return context.EditResponseAsync(embed: _aboutEmbed);
+			await context.EditResponseAsync(embed: _aboutEmbed);
 		}
 
 		var owners = context.Client.CurrentApplication.Owners.Select(x => $"{x.Username} ({x.Mention})").ToArray();
@@ -99,6 +102,6 @@ internal sealed class UngroupedCommands : BotCommandsModule
 
 		Interlocked.Exchange(ref _aboutEmbed, embedBuilder.Build());
 
-		return context.EditResponseAsync(embed: _aboutEmbed);
+		await context.EditResponseAsync(embed: _aboutEmbed);
 	}
 }

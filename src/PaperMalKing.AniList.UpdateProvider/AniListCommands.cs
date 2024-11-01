@@ -2,7 +2,6 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using Microsoft.Extensions.Logging;
@@ -77,6 +76,6 @@ internal sealed class AniListCommands : ApplicationCommandModule
 																	  Option("updateType", "Type of update to set color for")] string unparsedUpdateType) => base.RemoveColor(context, unparsedUpdateType);
 
 		[SlashCommand("list", "Lists your overriden types")]
-		public override Task<DiscordMessage> ListOverridenColor(InteractionContext context) => base.ListOverridenColor(context);
+		public override Task ListOverridenColor(InteractionContext context) => base.ListOverridenColor(context);
 	}
 }
