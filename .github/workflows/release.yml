@@ -6,7 +6,7 @@ on:
     
 env:
   DOTNET_NOLOGO: true
-  node-version: '21.x'
+  node-version: '23.x'
 
 jobs:
   release:
@@ -17,6 +17,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+          fallback: none      
+      
       - name: Install .NET SDK if needed
         uses: actions/setup-dotnet@v4
 
@@ -29,7 +34,7 @@ jobs:
         run: dotnet restore    
       
       - name: Run publish
-        run: dotnet publish ./src/PaperMalKing/PaperMalKing.csproj -c Release --no-self-contained -o output
+        run: just publish
         
       - name: Create zip
         run: zip -9 -r Tantei.zip output/

@@ -20,7 +20,11 @@ env:
   DOTNET_NOLOGO: true
   artifact-name: "build-${{ github.sha }}"
   clientapp-dir: "./src/PaperMalKing/ClientApp"
-  node-version: '21.x'
+  node-version: '23.x'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -36,7 +40,7 @@ jobs:
       - name: Install .NET SDK if needed
         uses: actions/setup-dotnet@v4
           
-      - name: Set Node.js 21.x
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }} 
@@ -56,6 +60,9 @@ jobs:
           retention-days: 1
 
   test:
+    strategy:
+      matrix:
+        configuration: ['Release', 'Debug']
     name: Test
     runs-on: ubuntu-latest
     steps:
@@ -66,7 +73,7 @@ jobs:
         uses: actions/setup-dotnet@v4
 
       - name: Test
-        run: dotnet test --logger GitHubActions "${t}"
+        run: dotnet test --logger GitHubActions "${t}" -c ${{ matrix.configuration }}
 
   codeQl:
     name: Run CodeQL analysis
@@ -82,7 +89,7 @@ jobs:
       - name: Install .NET SDK if needed
         uses: actions/setup-dotnet@v4
           
-      - name: Set Node.js 19.x
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
