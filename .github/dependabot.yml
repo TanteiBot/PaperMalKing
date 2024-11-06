@@ -21,9 +21,7 @@ updates:
           - "*"
   
   - package-ecosystem: "npm"
-    directories:
-      - "/"
-      - "/src/PaperMalKing/ClientApp"
+    directory: "/src/PaperMalKing/ClientApp"
     schedule:
       interval: "weekly"
       day: "saturday"
