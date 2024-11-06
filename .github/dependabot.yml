@@ -5,9 +5,29 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
+    groups:
+      all-GHA:
+        patterns:
+          - "*"
 
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "saturday"
+    groups:
+      all-nuget:
+        patterns:
+          - "*"
+  
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/src/PaperMalKing/ClientApp"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+    groups:
+      all-npm:
+        patterns:
+          - "*"
