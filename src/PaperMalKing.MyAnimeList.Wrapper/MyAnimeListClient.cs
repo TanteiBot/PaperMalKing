@@ -48,7 +48,7 @@ public sealed class MyAnimeListClient(ILogger<MyAnimeListClient> _logger, HttpCl
 		if (options == ParserOptions.None)
 		{
 			ThrowHelper.ThrowArgumentException("No reason to parse profile without anime/manga lists and favorites",
-				nameof(options)); // TODO Replace with domain exception
+				nameof(options));
 		}
 
 		_logger.RequestingProfile(username);
