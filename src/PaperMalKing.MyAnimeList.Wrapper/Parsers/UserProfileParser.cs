@@ -10,7 +10,7 @@ using PaperMalKing.MyAnimeList.Wrapper.Abstractions.Models.Favorites;
 
 namespace PaperMalKing.MyAnimeList.Wrapper.Parsers;
 
-internal static partial class UserProfileParser
+internal static class UserProfileParser
 {
 	public static User Parse(IDocument document, ParserOptions options)
 	{

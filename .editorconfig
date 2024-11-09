@@ -2591,3 +2591,6 @@ dotnet_diagnostic.CA1822.severity = none
 
 [*ListType.cs]
 dotnet_diagnostic.S103.severity = none # Lines should not be too long
+
+[*.cshtml.cs]
+dotnet_diagnostic.MA0048.severity = none # File name must match type name
