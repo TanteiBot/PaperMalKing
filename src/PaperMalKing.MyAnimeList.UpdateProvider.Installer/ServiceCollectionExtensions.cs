@@ -28,12 +28,12 @@ public static class ServiceCollectionExtensions
 		serviceCollection.AddOptions<MalOptions>().BindConfiguration(Constants.Name).ValidateDataAnnotations().ValidateOnStart();
 		serviceCollection.AddSingleton(RateLimiterExtensions.ConfigurationLambda<MalOptions, IMyAnimeListClient>);
 
-		serviceCollection.AddHttpClient(Constants.UnOfficialApiHttpClientName, client =>
+		serviceCollection.AddHttpClient(Constants.UnOfficialApiHttpClientName, static client =>
 						{
 							client.Timeout = TimeSpan.FromSeconds(120L);
 							client.DefaultRequestHeaders.UserAgent.Clear();
 							client.DefaultRequestHeaders.UserAgent.ParseAdd(Constants.UserAgent);
-						}).ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory()).AddResilienceHandler("parser-mal", (builder, rbc) =>
+						}).ConfigurePrimaryHttpMessageHandler(static _ => HttpClientHandlerFactory()).AddResilienceHandler("parser-mal", static (builder, rbc) =>
 						{
 							builder.AddRetry(new HttpRetryStrategyOptions
 							{
@@ -43,12 +43,12 @@ public static class ServiceCollectionExtensions
 							var rateLimiter = rbc.ServiceProvider.GetRequiredService<RateLimiter<IMyAnimeListClient>>();
 							builder.AddRateLimiter(rateLimiter);
 						});
-		serviceCollection.AddHttpClient(Constants.OfficialApiHttpClientName).ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory())
-						 .ConfigureHttpClient((provider, client) =>
+		serviceCollection.AddHttpClient(Constants.OfficialApiHttpClientName).ConfigurePrimaryHttpMessageHandler(static _ => HttpClientHandlerFactory())
+						 .ConfigureHttpClient(static (provider, client) =>
 						 {
 							 var options = provider.GetRequiredService<IOptions<MalOptions>>().Value;
 							 client.DefaultRequestHeaders.Add(Constants.OfficialApiHeaderName, options.ClientId);
-						 }).AddResilienceHandler("official-mal", (builder, rbc) =>
+						 }).AddResilienceHandler("official-mal", static (builder, rbc) =>
 						 {
 							 builder.AddRetry(new HttpRetryStrategyOptions
 							 {
@@ -58,9 +58,9 @@ public static class ServiceCollectionExtensions
 							 var rateLimiter = rbc.ServiceProvider.GetRequiredService<RateLimiter<IMyAnimeListClient>>();
 							 builder.AddRateLimiter(rateLimiter);
 						 });
-		serviceCollection.AddHttpClient(Constants.JikanHttpClientName, client => client.BaseAddress = new(Constants.JikanApiUrl))
-						 .ConfigurePrimaryHttpMessageHandler(_ => HttpClientHandlerFactory())
-						 .AddResilienceHandler("jikan", builder =>
+		serviceCollection.AddHttpClient(Constants.JikanHttpClientName, static client => client.BaseAddress = new(Constants.JikanApiUrl))
+						 .ConfigurePrimaryHttpMessageHandler(static _ => HttpClientHandlerFactory())
+						 .AddResilienceHandler("jikan", static builder =>
 						 {
 							 var rpmRl = new RateLimitValue(60, TimeSpan.FromMinutes(1, 12)); // 60rpm with 0.2 as inaccuracy
 							 builder.AddRateLimiter(RateLimiterFactory.Create<IJikan>(rpmRl));
@@ -69,7 +69,7 @@ public static class ServiceCollectionExtensions
 							 builder.AddRateLimiter(RateLimiterFactory.Create<IJikan>(rpsRl));
 						 });
 
-		serviceCollection.AddSingleton<IJikan>(provider => new Jikan(
+		serviceCollection.AddSingleton<IJikan>(static provider => new Jikan(
 			new()
 			{
 				SuppressException = false,
@@ -77,7 +77,7 @@ public static class ServiceCollectionExtensions
 			},
 			provider.GetRequiredService<IHttpClientFactory>().CreateClient(Constants.JikanHttpClientName)));
 
-		serviceCollection.AddSingleton<IMyAnimeListClient, MyAnimeListClient>(provider =>
+		serviceCollection.AddSingleton<IMyAnimeListClient, MyAnimeListClient>(static provider =>
 		{
 			var factory = provider.GetRequiredService<IHttpClientFactory>();
 			var logger = provider.GetRequiredService<ILogger<MyAnimeListClient>>();
@@ -89,8 +89,8 @@ public static class ServiceCollectionExtensions
 		serviceCollection.AddSingleton<MalUserService>();
 
 		serviceCollection.AddSingleton<MalUpdateProvider>();
-		serviceCollection.AddSingleton<IUpdateProvider>(f => f.GetRequiredService<MalUpdateProvider>());
-		serviceCollection.AddHostedService(f => f.GetRequiredService<MalUpdateProvider>());
+		serviceCollection.AddSingleton<BaseUpdateProvider>(static f => f.GetRequiredService<MalUpdateProvider>());
+		serviceCollection.AddHostedService(static f => f.GetRequiredService<MalUpdateProvider>());
 
 		return serviceCollection;
 	}

@@ -11,7 +11,6 @@ using DSharpPlus.SlashCommands.Attributes;
 using Microsoft.Extensions.Hosting;
 using PaperMalKing.Common;
 using PaperMalKing.Startup.Services;
-using PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 
 namespace PaperMalKing.Startup.Commands;
 
@@ -30,17 +29,11 @@ internal sealed class AdminCommands(IHostApplicationLifetime _lifetime,
 	public async Task ForceCheckCommand(InteractionContext context, [Option(nameof(name), "Update provider name")] string name)
 	{
 		name = name.Trim();
-		BaseUpdateProvider? baseUpdateProvider;
 		await context.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-		if (_providersConfigurationService.Providers.TryGetValue(name, out var provider) && provider is BaseUpdateProvider bup)
+		if (!_providersConfigurationService.Providers.TryGetValue(name, out var baseUpdateProvider))
 		{
-			baseUpdateProvider = bup;
-		}
-		else
-		{
-			var upc = _providersConfigurationService.Providers.Values.FirstOrDefault(p => string.Equals(p.Name.Where(char.IsUpper).ToString(), name, StringComparison.Ordinal));
-			baseUpdateProvider = upc as BaseUpdateProvider;
+			baseUpdateProvider = _providersConfigurationService.Providers.Values.FirstOrDefault(p => string.Equals(p.Name.Where(char.IsUpper).ToString(), name, StringComparison.Ordinal));
 		}
 
 		if (baseUpdateProvider != null)

@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Threading;
 
 namespace PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 
-public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
+public abstract class BaseUpdateProvider : BackgroundService
 {
 	public abstract string Name { get; }
 

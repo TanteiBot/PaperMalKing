@@ -15,6 +15,6 @@ public sealed class ColorsChoiceProvider<T> : IEnumChoiceProvider<T>
 {
 	public static Task<IEnumerable<DiscordApplicationCommandOptionChoice>> CreateChoicesAsync()
 	{
-		return Task.FromResult(UpdateTypesHelper<T>.UpdateTypes.Select(ut => ut.ToDiscordApplicationCommandOptionChoice()).ToArray().AsEnumerable());
+		return Task.FromResult(UpdateTypesHelper<T>.UpdateTypes.Select(static ut => ut.ToDiscordApplicationCommandOptionChoice()).ToArray().AsEnumerable());
 	}
 }

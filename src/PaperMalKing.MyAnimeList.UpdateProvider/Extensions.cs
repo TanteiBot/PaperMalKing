@@ -185,8 +185,8 @@ internal static class Extensions
 		}.WithThumbnail(favorite.ImageUrl!).WithDescription($"{(added ? "Added" : "Removed")} favorite");
 
 		var color = dbUser.Colors.Find(added
-			? c => c.UpdateType == (byte)MalUpdateType.FavoriteAdded
-			: c => c.UpdateType == (byte)MalUpdateType.FavoriteRemoved)?.ColorValue ?? (added ? Constants.MalGreen : Constants.MalRed);
+			? static c => c.UpdateType == (byte)MalUpdateType.FavoriteAdded
+			: static c => c.UpdateType == (byte)MalUpdateType.FavoriteRemoved)?.ColorValue ?? (added ? Constants.MalGreen : Constants.MalRed);
 
 		eb.WithColor(color);
 

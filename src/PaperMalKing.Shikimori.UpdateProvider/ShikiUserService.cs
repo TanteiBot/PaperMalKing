@@ -116,6 +116,6 @@ internal sealed class ShikiUserService(IShikiClient _client, ILogger<ShikiUserSe
 
 	public override IReadOnlyList<BaseUser> ListUsers(ulong guildId)
 	{
-		return this.ListUsersCore(guildId, u => u.LastHistoryEntryId, u => new("", u.DiscordUser));
+		return this.ListUsersCore(guildId, static u => u.LastHistoryEntryId, static u => new("", u.DiscordUser));
 	}
 }

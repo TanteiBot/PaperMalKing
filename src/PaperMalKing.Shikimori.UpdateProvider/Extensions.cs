@@ -227,8 +227,8 @@ internal static partial class Extensions
 	{
 		var features = dbUser.Features;
 		var color = dbUser.Colors.Find(added
-			? c => c.UpdateType == (byte)ShikiUpdateType.FavoriteAdded
-			: c => c.UpdateType == (byte)ShikiUpdateType.FavoriteRemoved)?.ColorValue ?? (added ? Constants.ShikiGreen : Constants.ShikiRed);
+			? static c => c.UpdateType == (byte)ShikiUpdateType.FavoriteAdded
+			: static c => c.UpdateType == (byte)ShikiUpdateType.FavoriteRemoved)?.ColorValue ?? (added ? Constants.ShikiGreen : Constants.ShikiRed);
 
 		var favouriteName = favouriteEntry.FavouriteEntry.GetNameOrAltName(features);
 		var eb = new DiscordEmbedBuilder
@@ -354,6 +354,6 @@ internal static partial class Extensions
 	public static FavoriteIdType[] ToFavoriteIdType<T>(this T favorites)
 		where T : IReadOnlyCollection<FavouriteEntry>
 	{
-		return [.. favorites.Select(x => new FavoriteIdType(x.Id, (byte)x.GenericType![0])).OrderBy(x => x.Id).ThenBy(x => x.Type)];
+		return [.. favorites.Select(static x => new FavoriteIdType(x.Id, (byte)x.GenericType![0])).Order()];
 	}
 }

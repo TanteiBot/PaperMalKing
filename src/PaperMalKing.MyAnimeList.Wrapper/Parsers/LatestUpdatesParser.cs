@@ -32,7 +32,7 @@ internal static class LatestUpdatesParser
 			return null;
 		}
 
-		return nodes.Select(dataNode =>
+		return nodes.Select(static dataNode =>
 		{
 			var link = dataNode.QuerySelector("a")!.GetAttribute("href")!;
 			var id = Helper.ExtractIdFromMalUrl(link);

@@ -84,7 +84,7 @@ Delegate handler =
 	[Authorize(AuthenticationSchemes = "Discord")]
 (HttpContext context) => Task.FromResult(context.TraceIdentifier);
 app.MapGet("discord", handler);
-app.MapGet("api/getUpdateTimes", (IEnumerable<IUpdateProvider> updateProviders) => updateProviders.Select(up => new
+app.MapGet("api/getUpdateTimes", (IEnumerable<BaseUpdateProvider> updateProviders) => updateProviders.Select(up => new
 {
 	up.Name,
 	InProgress = up.IsUpdateInProgress,

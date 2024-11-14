@@ -24,15 +24,15 @@ public static class ServiceCollectionExtensions
 	{
 		serviceCollection.AddOptions<ShikiOptions>().BindConfiguration(Constants.Name).ValidateDataAnnotations().ValidateOnStart();
 
-		serviceCollection.AddHttpClient(Constants.Name).ConfigureHttpClient((provider, client) =>
+		serviceCollection.AddHttpClient(Constants.Name).ConfigureHttpClient(static (provider, client) =>
 		{
 			client.DefaultRequestHeaders.UserAgent.Clear();
 			client.DefaultRequestHeaders.UserAgent.ParseAdd(provider.GetRequiredService<IOptions<ShikiOptions>>().Value.ShikimoriAppName);
 			client.BaseAddress = new(Wrapper.Abstractions.Constants.BaseUrl);
-		}).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+		}).ConfigurePrimaryHttpMessageHandler(static () => new SocketsHttpHandler
 		{
 			PooledConnectionLifetime = TimeSpan.FromMinutes(15),
-		}).AddResilienceHandler("shiki", builder =>
+		}).AddResilienceHandler("shiki", static builder =>
 		{
 			const int shikiHttpRetryAttempts = 5;
 
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
 			builder.AddRateLimiter(RateLimiterFactory.Create<ShikiClient>(rpsRl));
 		});
 
-		serviceCollection.AddSingleton<IShikiClient, ShikiClient>(provider =>
+		serviceCollection.AddSingleton<IShikiClient, ShikiClient>(static provider =>
 		{
 			var factory = provider.GetRequiredService<IHttpClientFactory>();
 			var logger = provider.GetRequiredService<ILogger<ShikiClient>>();
@@ -61,8 +61,8 @@ public static class ServiceCollectionExtensions
 		serviceCollection.AddSingleton<ShikiAchievementsService>();
 
 		serviceCollection.AddSingleton<ShikiUpdateProvider>();
-		serviceCollection.AddSingleton<IUpdateProvider>(f => f.GetRequiredService<ShikiUpdateProvider>());
-		serviceCollection.AddHostedService(f => f.GetRequiredService<ShikiUpdateProvider>());
+		serviceCollection.AddSingleton<BaseUpdateProvider>(static f => f.GetRequiredService<ShikiUpdateProvider>());
+		serviceCollection.AddHostedService(static f => f.GetRequiredService<ShikiUpdateProvider>());
 
 		return serviceCollection;
 	}

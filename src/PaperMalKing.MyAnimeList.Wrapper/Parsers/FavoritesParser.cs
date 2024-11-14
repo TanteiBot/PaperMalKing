@@ -32,7 +32,7 @@ internal static class FavoritesParser
 	private static FavoriteCompany[] ParseFavoriteCompanies(IDocument parent)
 	{
 		var companyFavoritesNodes = GetFavoritesNodes(parent, "company_favorites");
-		return companyFavoritesNodes is null ? [] : ParseFavoriteBase(companyFavoritesNodes, node => new FavoriteCompany(ParseBaseFavorite(node)));
+		return companyFavoritesNodes is null ? [] : ParseFavoriteBase(companyFavoritesNodes, static node => new FavoriteCompany(ParseBaseFavorite(node)));
 	}
 
 	private static FavoriteAnime[] ParseFavoriteAnime(IDocument parent)
@@ -43,7 +43,7 @@ internal static class FavoritesParser
 			return [];
 		}
 
-		return ParseFavoriteBase(animeFavoritesNodes, node => new FavoriteAnime(ParseListEntryFavorite(node)));
+		return ParseFavoriteBase(animeFavoritesNodes, static node => new FavoriteAnime(ParseListEntryFavorite(node)));
 	}
 
 	private static FavoriteManga[] ParseFavoriteManga(IDocument parent)
@@ -54,7 +54,7 @@ internal static class FavoritesParser
 			return [];
 		}
 
-		return ParseFavoriteBase(mangaFavoriteNodes, node => new FavoriteManga(ParseListEntryFavorite(node)));
+		return ParseFavoriteBase(mangaFavoriteNodes, static node => new FavoriteManga(ParseListEntryFavorite(node)));
 	}
 
 	private static FavoriteCharacter[] ParseFavoriteCharacter(IDocument parent)
@@ -65,7 +65,7 @@ internal static class FavoritesParser
 			return [];
 		}
 
-		return ParseFavoriteBase(characterFavoriteNodes, node =>
+		return ParseFavoriteBase(characterFavoriteNodes, static node =>
 		{
 			var baseFav = ParseBaseFavorite(node);
 			var fromNode = node.QuerySelector(".users")!;
@@ -76,7 +76,7 @@ internal static class FavoritesParser
 	private static FavoritePerson[] ParseFavoritePerson(IDocument parent)
 	{
 		var personFavoriteNodes = GetFavoritesNodes(parent, "person_favorites");
-		return personFavoriteNodes is null ? [] : ParseFavoriteBase(personFavoriteNodes, node => new FavoritePerson(ParseBaseFavorite(node)));
+		return personFavoriteNodes is null ? [] : ParseFavoriteBase(personFavoriteNodes, static node => new FavoritePerson(ParseBaseFavorite(node)));
 	}
 
 	private static IHtmlCollection<IElement>? GetFavoritesNodes(IDocument parent, string sectionName)

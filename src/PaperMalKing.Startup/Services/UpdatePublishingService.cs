@@ -17,7 +17,6 @@ using PaperMalKing.Database;
 using PaperMalKing.Startup.Data;
 using PaperMalKing.Startup.Exceptions;
 using PaperMalKing.UpdatesProviders.Base;
-using PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 
 namespace PaperMalKing.Startup.Services;
 
@@ -68,10 +67,7 @@ internal sealed class UpdatePublishingService
 			foreach (var provider in this._updateProvidersConfigurationService.Providers.Values)
 			{
 				provider.UpdateFoundEvent += this.PublishUpdatesAsync;
-				if (provider is BaseUpdateProvider baseUpdateProvider)
-				{
-					baseUpdateProvider.StartOrRestartAfter(TimeSpan.FromSeconds(5));
-				}
+				provider.StartOrRestartAfter(TimeSpan.FromSeconds(5));
 			}
 
 			this._logger.EndedQueryingPostingChannels();

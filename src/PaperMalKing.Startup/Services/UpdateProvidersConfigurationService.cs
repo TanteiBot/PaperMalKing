@@ -15,11 +15,11 @@ namespace PaperMalKing.Startup.Services;
 
 internal sealed class UpdateProvidersConfigurationService
 {
-	private readonly Dictionary<string, IUpdateProvider> _providers = new(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, BaseUpdateProvider> _providers = new(StringComparer.OrdinalIgnoreCase);
 
-	public ReadOnlyDictionary<string, IUpdateProvider> Providers => this._providers.AsReadOnly();
+	public ReadOnlyDictionary<string, BaseUpdateProvider> Providers => this._providers.AsReadOnly();
 
-	public UpdateProvidersConfigurationService(ILogger<UpdateProvidersConfigurationService> logger, IEnumerable<IUpdateProvider> updateProviders)
+	public UpdateProvidersConfigurationService(ILogger<UpdateProvidersConfigurationService> logger, IEnumerable<BaseUpdateProvider> updateProviders)
 	{
 		logger.BuildingUpdateProvidersConfigurationService(typeof(UpdateProvidersConfigurationService));
 		foreach (var updateProvider in updateProviders)

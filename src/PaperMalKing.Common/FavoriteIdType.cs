@@ -20,13 +20,13 @@ public sealed record FavoriteIdType(uint Id, byte Type) : IComparable<FavoriteId
 			return 1;
 		}
 
-		var typeComparison = this.Type.CompareTo(other.Type);
-		if (typeComparison != 0)
+		var idComparison = this.Id.CompareTo(other.Id);
+		if (idComparison != 0)
 		{
-			return typeComparison;
+			return idComparison;
 		}
 
-		return this.Id.CompareTo(other.Id);
+		return this.Type.CompareTo(other.Type);
 	}
 
 	public int CompareTo(object? obj)
