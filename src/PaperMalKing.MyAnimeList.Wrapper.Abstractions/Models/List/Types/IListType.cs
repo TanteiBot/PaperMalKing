@@ -11,5 +11,5 @@ public interface IListType
 	static abstract ListEntryType ListEntryType { get; }
 
 	static abstract string LatestUpdatesUrl<TRequestOptions>(string username, TRequestOptions options)
-		where TRequestOptions : unmanaged, Enum;
+		where TRequestOptions : unmanaged, Enum, allows ref struct;
 }

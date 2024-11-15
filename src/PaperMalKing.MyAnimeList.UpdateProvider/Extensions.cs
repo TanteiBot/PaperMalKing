@@ -60,7 +60,7 @@ internal static class Extensions
 	}
 
 	public static TRequestOptions ToRequestOptions<TRequestOptions>(this MalUserFeatures features)
-		where TRequestOptions : unmanaged, Enum
+		where TRequestOptions : unmanaged, Enum, allows ref struct
 	{
 		Debug.Assert(typeof(TRequestOptions) == typeof(AnimeFieldsToRequest) || typeof(TRequestOptions) == typeof(MangaFieldsToRequest),
 			$"Only {nameof(AnimeFieldsToRequest)} and {nameof(MangaFieldsToRequest)} are supported");

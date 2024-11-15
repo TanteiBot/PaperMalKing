@@ -14,7 +14,7 @@ public abstract class AnimeListType : IListType
 	public static ListEntryType ListEntryType => ListEntryType.Anime;
 
 	public static string LatestUpdatesUrl<TRequestOptions>(string username, TRequestOptions options)
-		where TRequestOptions : unmanaged, Enum
+		where TRequestOptions : unmanaged, Enum, allows ref struct
 	{
 		Debug.Assert(typeof(TRequestOptions) == typeof(AnimeFieldsToRequest), $"Request options must be a {nameof(AnimeFieldsToRequest)}");
 		var fields = Unsafe.As<TRequestOptions, AnimeFieldsToRequest>(ref options);

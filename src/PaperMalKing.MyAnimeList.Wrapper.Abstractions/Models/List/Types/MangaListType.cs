@@ -14,7 +14,7 @@ public abstract class MangaListType : IListType
 	public static ListEntryType ListEntryType => ListEntryType.Manga;
 
 	public static string LatestUpdatesUrl<TRequestOptions>(string username, TRequestOptions options)
-		where TRequestOptions : unmanaged, Enum
+		where TRequestOptions : unmanaged, Enum, allows ref struct
 	{
 		Debug.Assert(typeof(TRequestOptions) == typeof(MangaFieldsToRequest), $"Request options must be a {nameof(MangaFieldsToRequest)}");
 		var fields = Unsafe.As<TRequestOptions, MangaFieldsToRequest>(ref options);
