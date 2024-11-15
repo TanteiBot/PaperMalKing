@@ -11,17 +11,16 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
+using Microsoft.Extensions.Logging;
 using PaperMalKing.Common;
 using PaperMalKing.Common.Attributes;
 
 namespace PaperMalKing.Startup.Commands;
 
 [SlashModuleLifespan(SlashModuleLifespan.Singleton)]
-[SuppressMessage("Style", """VSTHRD200:Use "Async" suffix for async methods""", Justification = "It doesn't apply to commands")]
-[SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "It doesn't apply to commands")]
 [GuildOnly]
 [SlashRequireGuild]
-internal sealed class UngroupedCommands : BotCommandsModule
+internal sealed class UngroupedCommands(ILogger<UngroupedCommands> logger) : BotCommandsModule
 {
 	private static DiscordEmbed? _aboutEmbed;
 
@@ -34,6 +33,7 @@ internal sealed class UngroupedCommands : BotCommandsModule
 		[Option("channel", "Channel where the embed will be send")] DiscordChannel channelToSayIn,
 		[Option("text", "Text to send")] string messageContent)
 	{
+		using var scope = CreateLoggerScope(logger, context);
 		if (string.IsNullOrWhiteSpace(messageContent))
 		{
 			await context.EditResponseAsync(embed: EmbedTemplate.ErrorEmbed("Message's content shouldn't be empty"));
@@ -51,7 +51,7 @@ internal sealed class UngroupedCommands : BotCommandsModule
 		{
 			await channelToSayIn.SendMessageAsync(embed: embed);
 		}
-		#pragma warning disable CA1031, ERP022
+#pragma warning disable CA1031, ERP022
 		// Modify 'SayCommand' to catch a more specific allowed exception type, or rethrow the exception
 		// An exit point '}' swallows an unobserved exception
 		catch
@@ -59,16 +59,17 @@ internal sealed class UngroupedCommands : BotCommandsModule
 			await context.EditResponseAsync(
 				new DiscordWebhookBuilder().WithContent("Couldn't send message. Check permissions for bot and try again."));
 		}
-		#pragma warning restore CA1031, ERP022
+#pragma warning restore
 	}
 
 	[SlashCommand("About", "Displays info about bot")]
 	[SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:Parameter should not span multiple lines", Justification = "We format versions in multi-line string")]
-	public Task<DiscordMessage> AboutCommand(InteractionContext context)
+	public async Task AboutCommand(InteractionContext context)
 	{
+		using var scope = CreateLoggerScope(logger, context);
 		if (_aboutEmbed is not null)
 		{
-			return context.EditResponseAsync(embed: _aboutEmbed);
+			await context.EditResponseAsync(embed: _aboutEmbed);
 		}
 
 		var owners = context.Client.CurrentApplication.Owners.Select(x => $"{x.Username} ({x.Mention})").ToArray();
@@ -83,24 +84,24 @@ internal sealed class UngroupedCommands : BotCommandsModule
 
 		var versions = string.Create(CultureInfo.InvariantCulture, $"""
 																	Bot version - {botVersion}
-																	Commit - {Formatter.MaskedUrl(commitId, new Uri($"{sourceCodeLink}/tree/{commitId}"))}
+																	Commit - {Formatter.MaskedUrl(commitId, new($"{sourceCodeLink}/tree/{commitId}"))}
 																	Commit date - {Formatter.Timestamp(commitDate, TimestampFormat.ShortDateTime)}
 																	DSharpPlus version - {context.Client.VersionString.AsSpan(0, 14)}
 																	.NET version - {dotnetVersion}
 																	""");
 
 		var embedBuilder = new DiscordEmbedBuilder
-			{
-				Title = "About",
-				Url = sourceCodeLink,
-				Description = desc,
-				Color = DiscordColor.DarkBlue,
-			}.WithThumbnail(context.Client.CurrentUser.AvatarUrl)
-			 .AddField("Links", Formatter.MaskedUrl("Source code", new Uri(sourceCodeLink, UriKind.Absolute)), inline: true)
-			 .AddField(owners.Length > 1 ? "Contacts" : "Contact", string.Join('\n', owners), inline: true).AddField("Versions", versions, inline: false);
+		{
+			Title = "About",
+			Url = sourceCodeLink,
+			Description = desc,
+			Color = DiscordColor.DarkBlue,
+		}.WithThumbnail(context.Client.CurrentUser.AvatarUrl)
+		 .AddField("Links", Formatter.MaskedUrl("Source code", new(sourceCodeLink, UriKind.Absolute)), inline: true)
+		 .AddField(owners.Length > 1 ? "Contacts" : "Contact", owners.JoinToString('\n'), inline: true).AddField("Versions", versions);
 
 		Interlocked.Exchange(ref _aboutEmbed, embedBuilder.Build());
 
-		return context.EditResponseAsync(embed: _aboutEmbed);
+		await context.EditResponseAsync(embed: _aboutEmbed);
 	}
 }

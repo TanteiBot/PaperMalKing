@@ -3,22 +3,15 @@
 
 namespace PaperMalKing.MyAnimeList.Wrapper.Abstractions.Models.Favorites;
 
-public class BaseFavorite
+public class BaseFavorite(MalUrl url, string name, string? imageUrl)
 {
-	public MalUrl Url { get; init; }
+	public MalUrl Url { get; init; } = url;
 
-	public string Name { get; init; }
+	public string Name { get; init; } = name;
 
-	public string? ImageUrl { get; init; }
+	public string? ImageUrl { get; init; } = imageUrl;
 
-	public BaseFavorite(MalUrl url, string name, string? imageUrl)
-	{
-		this.Url = url;
-		this.Name = name;
-		this.ImageUrl = imageUrl;
-	}
-
-	public BaseFavorite(BaseFavorite other)
+	protected BaseFavorite(BaseFavorite other)
 		: this(other.Url, other.Name, other.ImageUrl)
 	{
 	}

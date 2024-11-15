@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Threading;
 
 namespace PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 
-public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
+public abstract class BaseUpdateProvider : BackgroundService
 {
 	public abstract string Name { get; }
 
@@ -55,8 +55,14 @@ public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
 
 		var rts = this._restartTokenSource;
 
-		this._restartTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-		rts.Dispose();
+		try
+		{
+			this._restartTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+		}
+		finally
+		{
+			rts.Dispose();
+		}
 
 		while (!stoppingToken.IsCancellationRequested)
 		{
@@ -71,25 +77,31 @@ public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
 			this.IsUpdateInProgress = true;
 			this.DateTimeOfNextUpdate = null;
 			TimeSpan delayBetweenTimerFires;
+			var scope = this.Logger.BeginScope("Update checking");
 			try
 			{
 				this.Logger.StartCheckingForUpdates(this.Name);
 				await this.CheckForUpdatesAsync(stoppingToken);
+			}
+			catch (TimeoutException)
+			{
+				this.Logger.UpdateProviderApiTimedOut();
 			}
 			catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
 			{
 				// Ignore
 				// We were cancelled
 			}
-			#pragma warning disable CA1031
+#pragma warning disable CA1031
 			// Modify 'ExecuteAsync' to catch a more specific allowed exception type, or rethrow the exception
 			catch (Exception e)
-			#pragma warning restore CA1031
+#pragma warning restore
 			{
 				this.Logger.ErrorOnUpdateCheck(e, this.Name);
 			}
 			finally
 			{
+				scope?.Dispose();
 				delayBetweenTimerFires = this.DelayBetweenTimerFires;
 				this.Logger.EndCheckingForUpdates(this.Name, delayBetweenTimerFires);
 				this.IsUpdateInProgress = false;
@@ -100,16 +112,14 @@ public abstract class BaseUpdateProvider : BackgroundService, IUpdateProvider
 			{
 				await Task.Delay(delayBetweenTimerFires, this._restartTokenSource.Token);
 			}
-			#pragma warning disable CA1031
+#pragma warning disable CA1031, ERP022
 			// Modify 'ExecuteAsync' to catch a more specific allowed exception type, or rethrow the exception
 			catch
-			#pragma warning restore CA1031
 			{
 				// Ignore
-			#pragma warning disable ERP022
-			// Unobserved exception in a generic exception handler
+				// Unobserved exception in a generic exception handler
 			}
-			#pragma warning restore ERP022
+#pragma warning restore
 		}
 	}
 

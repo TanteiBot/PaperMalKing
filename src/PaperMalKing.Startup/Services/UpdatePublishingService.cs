@@ -17,7 +17,6 @@ using PaperMalKing.Database;
 using PaperMalKing.Startup.Data;
 using PaperMalKing.Startup.Exceptions;
 using PaperMalKing.UpdatesProviders.Base;
-using PaperMalKing.UpdatesProviders.Base.UpdateProvider;
 
 namespace PaperMalKing.Startup.Services;
 
@@ -30,7 +29,8 @@ internal sealed class UpdatePublishingService
 	private readonly ILoggerFactory _loggerFactory;
 	private readonly ConcurrentDictionary<ulong, UpdatePoster> _updatePosters = new();
 
-	public UpdatePublishingService(ILogger<UpdatePublishingService> logger, DiscordClient discordClient, IDbContextFactory<DatabaseContext> dbContextFactory, UpdateProvidersConfigurationService updateProvidersConfigurationService, ILoggerFactory loggerFactory)
+	public UpdatePublishingService(ILogger<UpdatePublishingService> logger, DiscordClient discordClient, IDbContextFactory<DatabaseContext> dbContextFactory,
+								   UpdateProvidersConfigurationService updateProvidersConfigurationService, ILoggerFactory loggerFactory)
 	{
 		this._logger = logger;
 		this._discordClient = discordClient;
@@ -52,11 +52,11 @@ internal sealed class UpdatePublishingService
 				this._logger.TryingToGetGuildWithId(guild.DiscordGuildId);
 				var discordGuild = e.Guilds[guild.DiscordGuildId];
 				this._logger.LoadedGuild(discordGuild);
-				#pragma warning disable EA0013
+#pragma warning disable EA0013
 				// Consider removing unnecessary null coalescing (??) since the left-hand value is statically known not to be null
 				var channel = discordGuild.GetChannel(guild.PostingChannelId) ??
 							  (await discordGuild.GetChannelsAsync()).FirstOrDefault(ch => ch.Id == guild.PostingChannelId);
-				#pragma warning restore EA0013
+#pragma warning restore
 				this._logger.LoadedChannelInGuild(channel, discordGuild);
 				if (channel is not null)
 				{
@@ -67,10 +67,7 @@ internal sealed class UpdatePublishingService
 			foreach (var provider in this._updateProvidersConfigurationService.Providers.Values)
 			{
 				provider.UpdateFoundEvent += this.PublishUpdatesAsync;
-				if (provider is BaseUpdateProvider baseUpdateProvider)
-				{
-					baseUpdateProvider.StartOrRestartAfter(TimeSpan.FromSeconds(5));
-				}
+				provider.StartOrRestartAfter(TimeSpan.FromSeconds(5));
 			}
 
 			this._logger.EndedQueryingPostingChannels();

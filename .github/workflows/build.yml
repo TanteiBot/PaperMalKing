@@ -99,6 +99,12 @@ jobs:
         with:
           languages: 'csharp'
           queries: security-and-quality
+          config: |
+            query-filters:
+              - exclude:
+                  id: cs/call-to-unmanaged-code
+              - exclude:
+                  id: cs/unmanaged-code
 
       - name: Build .NET
         run: dotnet build

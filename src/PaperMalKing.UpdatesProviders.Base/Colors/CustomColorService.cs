@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
+using PaperMalKing.Common;
 using PaperMalKing.Database;
 using PaperMalKing.Database.Models;
 using PaperMalKing.UpdatesProviders.Base.Exceptions;
@@ -16,26 +17,20 @@ using PaperMalKing.UpdatesProviders.Base.Exceptions;
 namespace PaperMalKing.UpdatesProviders.Base.Colors;
 
 [SuppressMessage("Roslynator", "RCS1261:Resource can be disposed asynchronously", Justification = "Sqlite does not support async")]
-public sealed class CustomColorService<TUser, TUpdateType>
+public sealed class CustomColorService<TUser, TUpdateType>(IDbContextFactory<DatabaseContext> dbContextFactory)
 	where TUser : class, IUpdateProviderUser
 	where TUpdateType : unmanaged, Enum
 {
-	public IDbContextFactory<DatabaseContext> DbContextFactory { get; }
-
-	public CustomColorService(IDbContextFactory<DatabaseContext> dbContextFactory)
-	{
-		this.DbContextFactory = dbContextFactory;
-	}
-
 	public async Task SetColorAsync(ulong userId, TUpdateType updateType, DiscordColor color)
 	{
-		using var db = this.DbContextFactory.CreateDbContext();
+		using var db = dbContextFactory.CreateDbContext();
 
-		var user = db.Set<TUser>().TagWith("Getting user to set color").TagWithCallSite().FirstOrDefault(u => u.DiscordUserId == userId) ?? throw new UserProcessingException("You must create account first");
+		var user = db.Set<TUser>().TagWith("Getting user to set color").TagWithCallSite()
+					 .FirstOrDefault(u => u.DiscordUserId == userId) ?? throw new UserProcessingException("You must create account first");
 		var byteType = Unsafe.As<TUpdateType, byte>(ref updateType);
 
 		user.Colors.RemoveAll(c => c.UpdateType == byteType);
-		user.Colors.Add(new CustomUpdateColor
+		user.Colors.Add(new()
 		{
 			UpdateType = byteType,
 			ColorValue = color.Value,
@@ -46,7 +41,7 @@ public sealed class CustomColorService<TUser, TUpdateType>
 
 	public async Task RemoveColorAsync(ulong userId, TUpdateType updateType)
 	{
-		using var db = this.DbContextFactory.CreateDbContext();
+		using var db = dbContextFactory.CreateDbContext();
 		var user = db.Set<TUser>().TagWith("Getting user to remove color").TagWithCallSite().FirstOrDefault(u => u.DiscordUserId == userId) ??
 				   throw new UserProcessingException("You must create account first");
 
@@ -57,11 +52,10 @@ public sealed class CustomColorService<TUser, TUpdateType>
 		await db.SaveChangesAndThrowOnNoneAsync();
 	}
 
-	[SuppressMessage("Major Code Smell", "S2971:LINQ expressions should be simplified", Justification = "We must materialize it")]
 	[SuppressMessage("Performance", "EA0006:Replace uses of \'Enum.GetName\' and \'Enum.ToString\' for improved performance", Justification = "We don't know type here")]
 	public string? OverridenColors(ulong userId)
 	{
-		using var db = this.DbContextFactory.CreateDbContext();
+		using var db = dbContextFactory.CreateDbContext();
 		var colors = db.Set<TUser>().TagWith("Getting colors of a user").TagWithCallSite().AsNoTracking().Where(u => u.DiscordUserId == userId).Select(x => x.Colors).FirstOrDefault();
 
 		if (colors is null or [])
@@ -69,8 +63,7 @@ public sealed class CustomColorService<TUser, TUpdateType>
 			return null;
 		}
 
-		return $"Your colors: {string.Join('\n',
-			colors.Select(c =>
-				$"{(TUpdateType)(object)c.UpdateType}: #{string.Create(CultureInfo.InvariantCulture, $"{c.ColorValue:X6}")}"))}";
+		return $"Your colors: {colors.Select(c =>
+			$"{(TUpdateType)(object)c.UpdateType}: #{string.Create(CultureInfo.InvariantCulture, $"{c.ColorValue:X6}")}").JoinToString('\n')}";
 	}
 }

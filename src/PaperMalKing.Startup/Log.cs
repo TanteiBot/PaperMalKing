@@ -34,13 +34,18 @@ internal static partial class Log
 	public static partial void FinishingUserCleanup(this ILogger<UserCleanupService> logger);
 
 	[LoggerMessage(LogLevel.Warning, "Posting update to {Channel} - {@Embed}")]
-	public static partial void PostingUpdate(this ILogger<UpdatePoster> logger, DiscordChannel channel, DiscordEmbed embed);
+#pragma warning disable EXTEXP0003
+	public static partial void PostingUpdate(this ILogger<UpdatePoster> logger, DiscordChannel channel, [LogProperties(Transitive = true)] DiscordEmbed embed);
+#pragma warning restore EXTEXP0003
 
 	[LoggerMessage(LogLevel.Debug, "{Command} was successfully executed by request of {Member}")]
 	public static partial void CommandSuccessfullyExecuted(this ILogger<CommandsService> logger, string command, DiscordMember member);
 
 	[LoggerMessage(LogLevel.Error, "{Command} errored with exception while trying to be executed by {Member}")]
 	public static partial void CommandErrored(this ILogger<CommandsService> logger, Exception ex, string command, DiscordMember member);
+
+	[LoggerMessage(LogLevel.Warning, "{Command} errored with exception that may be part of normal flow while trying to be executed by {Member}")]
+	public static partial void UserFacingCommandErrored(this ILogger<CommandsService> logger, Exception ex, string command, DiscordMember member);
 
 	[LoggerMessage(LogLevel.Information, "Updating channel of {Guild} from {CurrentChannelId} to {NewChannelId}")]
 	public static partial void UpdatingChannel(this ILogger<GuildManagementService> logger, DiscordGuild guild, ulong currentChannelId,

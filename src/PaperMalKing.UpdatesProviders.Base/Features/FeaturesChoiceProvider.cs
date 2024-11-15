@@ -21,7 +21,7 @@ public sealed class FeaturesChoiceProvider<T> : IEnumChoiceProvider<T>
 	[SuppressMessage("Roslynator", "RCS1158:Static member in generic type should use a type parameter", Justification = "Not really")]
 	public static Task<IEnumerable<DiscordApplicationCommandOptionChoice>> CreateChoicesAsync()
 	{
-		var choices = FeaturesHelper<T>.Features.Select(x => x.ToDiscordApplicationCommandOptionChoice()).ToArray();
+		var choices = FeaturesHelper<T>.Features.Select(static x => x.ToDiscordApplicationCommandOptionChoice()).ToArray();
 		return Task.FromResult(choices.AsEnumerable());
 	}
 }

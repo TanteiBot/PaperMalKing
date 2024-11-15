@@ -4,12 +4,12 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
         <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
-        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
-        <PackageReference Include="Polly.Contrib.WaitAndRetry" />
         <PackageReference Include="System.Threading.RateLimiting" />
         <PackageReference Include="GraphQL.Client" />
         <PackageReference Include="GraphQL.Client.Serializer.SystemTextJson" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Extensions.Telemetry.Abstractions" />
     </ItemGroup>
     
     <ItemGroup>

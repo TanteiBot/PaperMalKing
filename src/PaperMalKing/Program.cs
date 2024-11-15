@@ -64,7 +64,7 @@ app.Map(new PathString(spaPath), client =>
 
 		// adds no-store header to index page to prevent deployment issues (prevent linking to old .js files)
 		// .js and other static resources are still cached by the browser
-		spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+		spa.Options.DefaultPageStaticFileOptions = new()
 		{
 			OnPrepareResponse = ctx =>
 			{
@@ -82,9 +82,9 @@ app.Map(new PathString(spaPath), client =>
 
 Delegate handler =
 	[Authorize(AuthenticationSchemes = "Discord")]
-	(HttpContext context) => Task.FromResult(context.TraceIdentifier);
+(HttpContext context) => Task.FromResult(context.TraceIdentifier);
 app.MapGet("discord", handler);
-app.MapGet("api/getUpdateTimes", (IEnumerable<IUpdateProvider> updateProviders) => updateProviders.Select(up => new
+app.MapGet("api/getUpdateTimes", (IEnumerable<BaseUpdateProvider> updateProviders) => updateProviders.Select(up => new
 {
 	up.Name,
 	InProgress = up.IsUpdateInProgress,
