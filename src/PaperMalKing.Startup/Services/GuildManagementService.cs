@@ -45,12 +45,11 @@ internal sealed class GuildManagementService(ILogger<GuildManagementService> _lo
 	public async Task RemoveGuildAsync(ulong guildId)
 	{
 		using var db = _dbContextFactory.CreateDbContext();
-		var guild = db.DiscordGuilds.TagWith("Query guild to remove it").TagWithCallSite().FirstOrDefault() ??
+		var guild = db.DiscordGuilds.TagWith("Query guild to remove it").TagWithCallSite().FirstOrDefault(guild => guild.DiscordGuildId == guildId) ??
 					throw new GuildManagementException("You can't remove this server from posting updates", guildId);
 		_logger.RemovingGuild(guildId);
 
 		db.DiscordGuilds.Where(g => g.DiscordGuildId == guildId).ExecuteDelete();
-		db.DiscordGuilds.Remove(guild);
 		_updatePublishingService.RemoveChannel(guild.PostingChannelId);
 		await db.SaveChangesAndThrowOnNoneAsync();
 	}
