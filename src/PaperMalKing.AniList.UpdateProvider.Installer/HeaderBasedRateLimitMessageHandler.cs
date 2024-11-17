@@ -48,7 +48,7 @@ internal sealed class HeaderBasedRateLimitMessageHandler(ILogger<HeaderBasedRate
 
 				response = await base.SendAsync(request, cancellationToken);
 
-				if (response is { StatusCode: HttpStatusCode.TooManyRequests, Headers.RetryAfter.Delta: { } })
+				if (response is { StatusCode: HttpStatusCode.TooManyRequests, Headers.RetryAfter.Delta: not null })
 				{
 					var delay = response.Headers.RetryAfter.Delta.Value.Add(TimeSpan.FromSeconds(1));
 					_logger.Got429HttpResponse(delay);
