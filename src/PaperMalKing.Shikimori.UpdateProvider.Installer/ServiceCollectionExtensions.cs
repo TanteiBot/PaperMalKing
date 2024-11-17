@@ -41,10 +41,11 @@ public static class ServiceCollectionExtensions
 				MaxRetryAttempts = shikiHttpRetryAttempts,
 			});
 
-			var rpmRl = new RateLimitValue(50, TimeSpan.FromMinutes(1, 5)); // 90rpm with .05 as inaccuracy
+			// https://shikimori.one/api/doc/1.0
+			var rpmRl = new RateLimitValue(50, TimeSpan.FromMinutes(1, 25)); // 90rpm with .05 as inaccuracy
 			builder.AddRateLimiter(RateLimiterFactory.Create<ShikiClient>(rpmRl));
 
-			var rpsRl = new RateLimitValue(3, TimeSpan.FromSeconds(1, 200)); // 5rps with .05 as inaccuracy
+			var rpsRl = new RateLimitValue(2, TimeSpan.FromSeconds(1, 500)); // 5rps with .05 as inaccuracy
 			builder.AddRateLimiter(RateLimiterFactory.Create<ShikiClient>(rpsRl));
 		});
 

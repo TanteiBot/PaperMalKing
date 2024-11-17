@@ -62,10 +62,11 @@ public static class ServiceCollectionExtensions
 						 .ConfigurePrimaryHttpMessageHandler(static _ => HttpClientHandlerFactory())
 						 .AddResilienceHandler("jikan", static builder =>
 						 {
-							 var rpmRl = new RateLimitValue(60, TimeSpan.FromMinutes(1, 12)); // 60rpm with 0.2 as inaccuracy
+							 // https://docs.api.jikan.moe/#section/Information/Rate-Limiting
+							 var rpmRl = new RateLimitValue(50, TimeSpan.FromMinutes(1, 25)); // 60rpm with 0.2 as inaccuracy
 							 builder.AddRateLimiter(RateLimiterFactory.Create<IJikan>(rpmRl));
 
-							 var rpsRl = new RateLimitValue(3, TimeSpan.FromSeconds(1, 500)); // 3rps with 0.5 as inaccuracy
+							 var rpsRl = new RateLimitValue(2, TimeSpan.FromSeconds(1, 500)); // 3rps with 0.5 as inaccuracy
 							 builder.AddRateLimiter(RateLimiterFactory.Create<IJikan>(rpsRl));
 						 });
 
