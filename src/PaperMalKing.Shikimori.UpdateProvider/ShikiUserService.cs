@@ -63,7 +63,7 @@ internal sealed class ShikiUserService(IShikiClient _client, ILogger<ShikiUserSe
 		}
 
 		var dUser = db.DiscordUsers.TagWith("Query discord user to link AniList user to it").TagWithCallSite().Include(x => x.Guilds).FirstOrDefault(du => du.DiscordUserId == userId);
-		var shikiUser = await _client.GetUserAsync(username);
+		var shikiUser = await _client.GetUserByNicknameAsync(username);
 		var history = await _client.GetUserHistoryAsync(shikiUser.Id, 1, 1, HistoryRequestOptions.Any);
 		var favourites = await _client.GetUserFavouritesAsync(shikiUser.Id);
 		var achievements = await _client.GetUserAchievementsAsync(shikiUser.Id);

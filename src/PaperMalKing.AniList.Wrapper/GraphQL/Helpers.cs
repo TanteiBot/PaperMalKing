@@ -3,6 +3,7 @@
 
 using System.Text;
 using PaperMalKing.AniList.Wrapper.Abstractions.Models;
+using PaperMalKing.Common;
 
 namespace PaperMalKing.AniList.Wrapper.GraphQL;
 
@@ -97,7 +98,7 @@ internal static class Helpers
 				""");
 		}
 
-		if (options.HasFlag(RequestOptions.Mangaka) || options.HasFlag(RequestOptions.Director))
+		if (options.HasAnyFlag(RequestOptions.Mangaka, RequestOptions.Director))
 		{
 			sb.AppendLine(
 				"""
@@ -116,7 +117,7 @@ internal static class Helpers
 				""");
 		}
 
-		if (options.HasFlag(RequestOptions.Seyu) && options.HasFlag(RequestOptions.AnimeList))
+		if (options.HasAllFlags(RequestOptions.Seyu, RequestOptions.AnimeList))
 		{
 			sb.AppendLine(// We select node since without it anilist provides empty array in voice actors
 				"""

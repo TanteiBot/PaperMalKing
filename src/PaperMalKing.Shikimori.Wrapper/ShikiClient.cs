@@ -6,39 +6,40 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using GraphQL.Client.Http;
 using Microsoft.Extensions.Logging;
 using PaperMalKing.Common.Enums;
 using PaperMalKing.Shikimori.Wrapper.Abstractions;
 using PaperMalKing.Shikimori.Wrapper.Abstractions.Models;
 using PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
+using PaperMalKing.Shikimori.Wrapper.Responses;
 
 namespace PaperMalKing.Shikimori.Wrapper;
 
 [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Will be handled by its parent")]
-public sealed class ShikiClient(HttpClient _httpClient, ILogger<ShikiClient> _logger) : IShikiClient
+public sealed class ShikiClient(HttpClient _httpClient, ILogger<ShikiClient> _logger, GraphQLHttpClient _graphQlClient) : IShikiClient
 {
-	public async Task<UserInfo> GetUserAsync(string nickname, CancellationToken cancellationToken = default)
+	public async Task<UserInfo> GetUserByNicknameAsync(string nickname, CancellationToken cancellationToken = default)
 	{
 		_logger.RequestingUserInfo(nickname);
 
-		nickname = WebUtility.UrlEncode(nickname);
-		var url = $"{Constants.BaseUsersApiUrl}/{nickname}";
+		var result = await _graphQlClient.SendQueryAsync<UserInfoResponse>(new(Queries.UserByNicknameQuery, new { nickname }), cancellationToken);
 
-		using var rm = new HttpRequestMessage(HttpMethod.Get, url)
-		{
-			Content = new MultipartFormDataContent
-			{
-				{ new StringContent("1"), "is_nickname" },
-			},
-		};
+		return result.Data.Users[0];
+	}
 
-		using var response = await _httpClient.SendAsync(rm, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-		return (await response.Content.ReadFromJsonAsync(JsonContext.Default.UserInfo, cancellationToken))!;
+	public async Task<UserInfo> GetUserByIdAsync(uint userId, CancellationToken cancellationToken = default)
+	{
+		_logger.RequestingUserInfo(userId);
+
+		var query = string.Format(CultureInfo.InvariantCulture, Queries.UserByIdQuery, userId);
+		var result = await _graphQlClient.SendQueryAsync<UserInfoResponse>(new GraphQLHttpRequest(query), cancellationToken);
+
+		return result.Data.Users[0];
 	}
 
 	public async Task<Favourites> GetUserFavouritesAsync(uint userId, CancellationToken cancellationToken = default)
@@ -76,32 +77,22 @@ public sealed class ShikiClient(HttpClient _httpClient, ILogger<ShikiClient> _lo
 		return new(data, hasNextPage);
 	}
 
-	public Task<TMedia?> GetMediaAsync<TMedia>(ulong id, ListEntryType type, CancellationToken cancellationToken = default)
+	public async Task<TMedia?> GetMediaAsync<TMedia>(ulong id, ListEntryType type, RequestOptions options, CancellationToken cancellationToken = default)
 		where TMedia : BaseMedia
 	{
-		var url = BuildUrlForRequestingMedia(id, type);
-		_logger.RequestingMedia(id, type);
-		return _httpClient.GetFromJsonAsync<TMedia>(url, cancellationToken);
+		var request = GetRequestForMedia(id, type, options);
+		_logger.RequestingMedia(id, type, options);
+
+		var response = await _graphQlClient.SendQueryAsync<MediaResponse<TMedia>>(request, cancellationToken);
+
+		return response.Data.Media.FirstOrDefault();
 	}
 
-	private static string BuildUrlForRequestingMedia(ulong id, ListEntryType type) =>
-		$"{Constants.BaseApiUrl}/{(type == ListEntryType.Anime ? "animes" : "mangas")}/{id}";
-
-	public async Task<IReadOnlyList<Role>> GetMediaStaffAsync(ulong id, ListEntryType type, CancellationToken cancellationToken = default)
+	private static GraphQLHttpRequest GetRequestForMedia(ulong id, ListEntryType type, RequestOptions requestOptions)
 	{
-		var url = $"{BuildUrlForRequestingMedia(id, type)}/roles";
-		_logger.RequestingStaff(id, type);
-		var roles = await _httpClient.GetFromJsonAsync(url, JsonContext.Default.ListRole, cancellationToken);
-		roles!.RemoveAll(x => x.Person is null);
-		roles.TrimExcess();
-		return roles;
-	}
+		var query = type == ListEntryType.Anime ? Queries.GetAnimeQuery(requestOptions) : Queries.GetMangaQuery(requestOptions);
 
-	public Task<UserInfo> GetUserInfoAsync(uint userId, CancellationToken cancellationToken = default)
-	{
-		var url = $"{Constants.BaseUsersApiUrl}/{userId}/info";
-		_logger.RequestingUserInfo(userId);
-		return _httpClient.GetFromJsonAsync(url, JsonContext.Default.UserInfo, cancellationToken)!;
+		return new(query, new { ids = id.ToString(CultureInfo.InvariantCulture) });
 	}
 
 	public async Task<IReadOnlyList<UserAchievement>> GetUserAchievementsAsync(uint userId, CancellationToken cancellationToken = default)
