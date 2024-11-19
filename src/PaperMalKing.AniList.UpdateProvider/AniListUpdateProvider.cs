@@ -259,7 +259,7 @@ internal sealed class AniListUpdateProvider(ILogger<AniListUpdateProvider> logge
 			yield break;
 		}
 
-		if (dbUser.Features.HasFlag(AniListUserFeatures.AnimeList) || dbUser.Features.HasFlag(AniListUserFeatures.MangaList))
+		if (dbUser.Features.HasAnyFlag(AniListUserFeatures.AnimeList, AniListUserFeatures.MangaList))
 		{
 			foreach (var grouping in recentUserUpdates.Activities.GroupBy(activity => activity.Media.Id).OrderBy(a => a.Max(aa => aa.CreatedAtTimestamp)))
 			{

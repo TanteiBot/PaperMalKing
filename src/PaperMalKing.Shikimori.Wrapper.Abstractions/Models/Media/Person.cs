@@ -16,5 +16,8 @@ public sealed class Person : IMultiLanguageName
 	[JsonPropertyName("russian")]
 	public required string RussianName { get; init; }
 
+	[JsonPropertyName("isMangaka")]
+	public bool IsMangaka { get; init; }
+
 	public string Url => Utils.GetUrl("people", this.Id);
 }

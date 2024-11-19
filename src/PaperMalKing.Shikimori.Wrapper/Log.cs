@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using PaperMalKing.Common.Enums;
+using PaperMalKing.Shikimori.Wrapper.Abstractions;
 
 namespace PaperMalKing.Shikimori.Wrapper;
 
@@ -14,8 +15,8 @@ internal static partial class Log
 	[LoggerMessage(LogLevel.Debug, "Requesting {UserId} history. Page {Page}")]
 	public static partial void RequestingHistoryPage(this ILogger<ShikiClient> logger, uint userId, uint page);
 
-	[LoggerMessage(LogLevel.Debug, "Requesting media with id: {MediaId}, and type: {Type}")]
-	public static partial void RequestingMedia(this ILogger<ShikiClient> logger, ulong mediaId, ListEntryType type);
+	[LoggerMessage(LogLevel.Debug, "Requesting media with id: {MediaId}, and type: {Type} with options: {Options}")]
+	public static partial void RequestingMedia(this ILogger<ShikiClient> logger, ulong mediaId, ListEntryType type, RequestOptions options);
 
 	[LoggerMessage(LogLevel.Debug, "Requesting staff for media with id: {MediaId}, and type: {Type}")]
 	public static partial void RequestingStaff(this ILogger<ShikiClient> logger, ulong mediaId, ListEntryType type);

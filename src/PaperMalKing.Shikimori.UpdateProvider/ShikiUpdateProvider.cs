@@ -75,7 +75,7 @@ internal sealed class ShikiUpdateProvider(ILogger<ShikiUpdateProvider> logger, I
 			{
 				db.Entry(dbUser).Reference(u => u.DiscordUser).Load();
 				db.Entry(dbUser.DiscordUser).Collection(du => du.Guilds).Load();
-				var user = await _client.GetUserInfoAsync(dbUser.Id, cancellationToken);
+				var user = await _client.GetUserByIdAsync(dbUser.Id, cancellationToken);
 
 				await this.UpdateFoundEvent.InvokeAsync(this,
 					new(new BaseUpdate(this.GetUpdatesAsync(user, dbUser, db, favs, isFavouritesMismatch, groupedHistoryEntriesWithMediaAndRoles, achievementUpdates, cancellationToken)), dbUser.DiscordUser));
@@ -92,7 +92,7 @@ internal sealed class ShikiUpdateProvider(ILogger<ShikiUpdateProvider> logger, I
 																		DatabaseContext db,
 																		Favourites favs,
 																		bool isFavouritesMismatch,
-																		IReadOnlyList<HistoryMediaRoles> groupedHistoryEntriesWithMediaAndRoles,
+																		IReadOnlyList<HistoryMedia> groupedHistoryEntriesWithMediaAndRoles,
 																		IReadOnlyList<ShikiAchievement> achievementUpdates,
 																		[EnumeratorCancellation] CancellationToken cancellationToken)
 	{
@@ -166,25 +166,26 @@ internal sealed class ShikiUpdateProvider(ILogger<ShikiUpdateProvider> logger, I
 		this.Logger.FoundUpdatesForUser(updatesCount, user.Nickname);
 	}
 
-	private async Task<IReadOnlyList<HistoryMediaRoles>> GroupHistoryEntriesAsync(IReadOnlyList<History> historyUpdates, ShikiUser dbUser, CancellationToken cancellationToken)
+	private async Task<IReadOnlyList<HistoryMedia>> GroupHistoryEntriesAsync(IReadOnlyList<History> historyUpdates, ShikiUser dbUser, CancellationToken cancellationToken)
 	{
-		var groupedHistoryEntriesWithMediaAndRoles = new List<HistoryMediaRoles>(historyUpdates.GroupSimilarHistoryEntries().Select(x => new HistoryMediaRoles(x)));
+		var groupedHistoryEntriesWithMediaAndRoles = new List<HistoryMedia>(historyUpdates.GroupSimilarHistoryEntries().Select(x => new HistoryMedia(x)));
+
+		var options = (RequestOptions)dbUser.Features;
 
 		foreach (var historyMediaRole in groupedHistoryEntriesWithMediaAndRoles.Where(x =>
 					 x.HistoryEntries.Exists(historyEntry => historyEntry.Target is not null)))
 		{
 			var history = historyMediaRole.HistoryEntries.First(x => x.Target is not null);
-			if (dbUser.Features.HasFlag(ShikiUserFeatures.Description) || dbUser.Features.HasFlag(ShikiUserFeatures.Studio) ||
-				dbUser.Features.HasFlag(ShikiUserFeatures.Publisher) || dbUser.Features.HasFlag(ShikiUserFeatures.Genres))
-			{
-				historyMediaRole.Media = history.Target!.Type == ListEntryType.Anime
-					? await _client.GetMediaAsync<AnimeMedia>(history.Target!.Id, ListEntryType.Anime, cancellationToken)
-					: await _client.GetMediaAsync<MangaMedia>(history.Target!.Id, ListEntryType.Manga, cancellationToken);
-			}
+			var isAnime = history.Target!.Type == ListEntryType.Anime;
+			var isManga = !isAnime;
 
-			if (dbUser.Features.HasFlag(ShikiUserFeatures.Mangaka) || dbUser.Features.HasFlag(ShikiUserFeatures.Director))
+			if (dbUser.Features.HasAnyFlag(ShikiUserFeatures.Description, ShikiUserFeatures.Genres) ||
+				(isAnime && dbUser.Features.HasAnyFlag(ShikiUserFeatures.Studio, ShikiUserFeatures.Director))
+				|| (isManga && dbUser.Features.HasAnyFlag(ShikiUserFeatures.Publisher, ShikiUserFeatures.Mangaka)))
 			{
-				historyMediaRole.Roles = await _client.GetMediaStaffAsync(history.Target!.Id, history.Target.Type, cancellationToken);
+				historyMediaRole.Media = isAnime
+					? await _client.GetMediaAsync<AnimeMedia>(history.Target!.Id, ListEntryType.Anime, options, cancellationToken)
+					: await _client.GetMediaAsync<MangaMedia>(history.Target!.Id, ListEntryType.Manga, options, cancellationToken);
 			}
 		}
 
@@ -203,21 +204,16 @@ internal sealed class ShikiUpdateProvider(ILogger<ShikiUpdateProvider> logger, I
 				_ => (false, false),
 			};
 
-			if ((dbUser.Features.HasFlag(ShikiUserFeatures.Mangaka) && isManga) || (dbUser.Features.HasFlag(ShikiUserFeatures.Director) && isAnime))
-			{
-				favouriteMediaRoles.Roles = await _client.GetMediaStaffAsync(favouriteMediaRoles.FavouriteEntry.Id,
-					isAnime ? ListEntryType.Anime : ListEntryType.Manga,
-					cancellationToken);
-			}
+			var requestOptions = (RequestOptions)dbUser.Features;
 
-			if (((isManga || isAnime) &&
-				 (dbUser.Features.HasFlag(ShikiUserFeatures.Description) || dbUser.Features.HasFlag(ShikiUserFeatures.Genres))) ||
-				(dbUser.Features.HasFlag(ShikiUserFeatures.Publisher) && isManga) || (dbUser.Features.HasFlag(ShikiUserFeatures.Studio) && isAnime))
+			if (dbUser.Features.HasAnyFlag(ShikiUserFeatures.Description, ShikiUserFeatures.Genres) ||
+				(isAnime && dbUser.Features.HasAnyFlag(ShikiUserFeatures.Studio, ShikiUserFeatures.Director))
+				|| (isManga && dbUser.Features.HasAnyFlag(ShikiUserFeatures.Publisher, ShikiUserFeatures.Mangaka)))
 			{
 				favouriteMediaRoles.Media = (isManga, isAnime) switch
 				{
-					(true, _) => await _client.GetMediaAsync<MangaMedia>(favouriteMediaRoles.FavouriteEntry.Id, ListEntryType.Manga, cancellationToken),
-					(_, true) => await _client.GetMediaAsync<AnimeMedia>(favouriteMediaRoles.FavouriteEntry.Id, ListEntryType.Anime, cancellationToken),
+					(true, _) => await _client.GetMediaAsync<MangaMedia>(favouriteMediaRoles.FavouriteEntry.Id, ListEntryType.Manga, requestOptions, cancellationToken),
+					(_, true) => await _client.GetMediaAsync<AnimeMedia>(favouriteMediaRoles.FavouriteEntry.Id, ListEntryType.Anime, requestOptions, cancellationToken),
 					_ => throw new UnreachableException(),
 				};
 			}

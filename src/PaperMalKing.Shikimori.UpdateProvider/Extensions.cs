@@ -2,7 +2,6 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -52,7 +51,6 @@ internal static partial class Extensions
 		Constants.ShikiBlue,
 	];
 
-	private static readonly FrozenSet<string> MangakaRelatedRoles = new[] { "story", "art", "creator", "design" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 	private static readonly CultureInfo RuCulture = CultureInfo.GetCultureInfo("ru-RU");
 
 	private static DiscordEmbedBuilder WithShikiAuthor(this DiscordEmbedBuilder builder, UserInfo user) =>
@@ -121,7 +119,7 @@ internal static partial class Extensions
 		return res;
 	}
 
-	public static DiscordEmbedBuilder ToDiscordEmbed(this HistoryMediaRoles history, UserInfo user, ShikiUser dbUser)
+	public static DiscordEmbedBuilder ToDiscordEmbed(this HistoryMedia history, UserInfo user, ShikiUser dbUser)
 	{
 		static ProgressType CalculateProgressType(List<History> histories)
 		{
@@ -218,7 +216,7 @@ internal static partial class Extensions
 			// No other type besides episodes or chapters exist
 		}
 
-		eb.FillMediaInfo(history.Media, history.Roles, features, target.Type);
+		eb.FillMediaInfo(history.Media, features, target.Type);
 
 		return eb;
 	}
@@ -241,9 +239,9 @@ internal static partial class Extensions
 
 		var isAnime = favouriteEntry.FavouriteEntry.GenericType!.Contains("anime", StringComparison.OrdinalIgnoreCase);
 		var isManga = favouriteEntry.FavouriteEntry.GenericType!.Contains("manga", StringComparison.OrdinalIgnoreCase);
-		if ((isAnime || isManga) && (favouriteEntry.Media is not null || favouriteEntry.Roles is not null))
+		if ((isAnime || isManga) && favouriteEntry.Media is not null)
 		{
-			eb.FillMediaInfo(favouriteEntry.Media, favouriteEntry.Roles, features, isAnime ? ListEntryType.Anime : ListEntryType.Manga);
+			eb.FillMediaInfo(favouriteEntry.Media, features, isAnime ? ListEntryType.Anime : ListEntryType.Manga);
 		}
 
 		return eb;
@@ -283,7 +281,7 @@ internal static partial class Extensions
 		return string.IsNullOrWhiteSpace(mainLang) ? secondaryLang! : mainLang;
 	}
 
-	private static void FillMediaInfo(this DiscordEmbedBuilder eb, BaseMedia? media, IReadOnlyList<Role>? roles, ShikiUserFeatures features, ListEntryType type)
+	private static void FillMediaInfo(this DiscordEmbedBuilder eb, BaseMedia? media, ShikiUserFeatures features, ListEntryType type)
 	{
 		if (type == ListEntryType.Anime)
 		{
@@ -296,12 +294,13 @@ internal static partial class Extensions
 				}
 			}
 
-			if (features.HasFlag(ShikiUserFeatures.Director) && roles is not null and not [])
+			if (features.HasFlag(ShikiUserFeatures.Director) && media?.PersonRoles is not null and not [])
 			{
-				var role = roles.FirstOrDefault(x => x.Person is not null && x.Name.Any(y => y.Equals("Director", StringComparison.OrdinalIgnoreCase)));
+				var role = media.PersonRoles.FirstOrDefault(x => x.Person is not null && x.Name.Any(y => y.Trim().Equals("Director", StringComparison.OrdinalIgnoreCase)));
+
 				if (role is not null)
 				{
-					eb.AddField("Director", role.Person!.GetNameOrAltName(features), inline: true);
+					eb.AddField("Director", $"{Formatter.MaskedUrl(role.Person!.GetNameOrAltName(features), new(role.Person!.Url))}", inline: true);
 				}
 			}
 		}
@@ -316,15 +315,17 @@ internal static partial class Extensions
 				}
 			}
 
-			if (features.HasFlag(ShikiUserFeatures.Mangaka) && roles is not null and not [])
+			if (features.HasFlag(ShikiUserFeatures.Mangaka) && media?.PersonRoles is not null and not [])
 			{
-				var mangakas = roles.Where(x => x.Person is not null && MangakaRelatedRoles.Overlaps(x.Name)).Take(5).Select(x =>
+				var mangakas = media.PersonRoles.Where(x => x.Person?.IsMangaka == true).Take(5).Select(x =>
 				{
 					var nameOfRole = features.HasFlag(ShikiUserFeatures.Russian)
 						? x.RussianName.FirstOrDefault(y => !string.IsNullOrWhiteSpace(y)) ?? x.Name[0]
 						: x.Name.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? x.RussianName[0];
+
 					return $"{Formatter.MaskedUrl(x.Person!.GetNameOrAltName(features), new(x.Person!.Url))} - {nameOfRole}";
 				}).JoinToString();
+
 				if (!string.IsNullOrEmpty(mangakas))
 				{
 					eb.AddField("Author", mangakas, inline: true);

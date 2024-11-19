@@ -299,7 +299,7 @@ internal static class Extensions
 			eb.Description = Formatter.MaskedUrl(title, new(listEntry.Node.Url));
 		}
 
-		var mediaInfo = features.HasFlag(MalUserFeatures.Demographic) || features.HasFlag(MalUserFeatures.Themes) ? listEntry switch
+		var mediaInfo = features.HasAnyFlag(MalUserFeatures.Demographic, MalUserFeatures.Themes) ? listEntry switch
 		{
 			MangaListEntry => await client.GetMangaDetailsAsync(listEntry.Node.Id, cancellationToken),
 			AnimeListEntry => await client.GetAnimeDetailsAsync(listEntry.Node.Id, cancellationToken),

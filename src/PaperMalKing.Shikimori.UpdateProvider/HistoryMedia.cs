@@ -8,11 +8,9 @@ using PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 namespace PaperMalKing.Shikimori.UpdateProvider;
 
-internal sealed record HistoryMediaRoles(List<History> HistoryEntries)
+internal sealed record HistoryMedia(List<History> HistoryEntries)
 {
 	public BaseMedia? Media { get; set; }
-
-	public IReadOnlyList<Role>? Roles { get; set; }
 
 	public uint MinId => this.HistoryEntries is null or [] ? 0 : this.HistoryEntries.Min(static h => h.Id);
 

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -52,6 +53,38 @@ public static partial class TypeExtensions
 			span[0] = char.ToUpperInvariant(s[0]);
 			s.AsSpan(1).CopyTo(span[1..]);
 		});
+	}
+
+	[SuppressMessage("Major Code Smell", "S2589:Boolean expressions should not be gratuitous", Justification = "False positive")]
+	public static bool HasAnyFlag<TEnum>(this TEnum @enum, params ReadOnlySpan<TEnum> flags)
+		where TEnum : unmanaged, Enum
+	{
+		var result = false;
+
+		foreach (var flag in flags)
+		{
+			result = result || @enum.HasFlag(flag);
+
+			if (result)
+			{
+				return result;
+			}
+		}
+
+		return result;
+	}
+
+	public static bool HasAllFlags<TEnum>(this TEnum @enum, params ReadOnlySpan<TEnum> flags)
+		where TEnum : unmanaged, Enum
+	{
+		var result = true;
+
+		foreach (var flag in flags)
+		{
+			result = result && @enum.HasFlag(flag);
+		}
+
+		return result;
 	}
 
 	public static string GetFullMessage(this Exception ex)
