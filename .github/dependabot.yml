@@ -26,12 +26,6 @@ updates:
           - "*coverlet*"
           - "*GitHubActionsTestLogger*"
           - "*Test.Sdk*"
-
-  - package-ecosystem: "nuget"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    groups:
       nuget-testing:
         patterns:
           - "*xunit*"
