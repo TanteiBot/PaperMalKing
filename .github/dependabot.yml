@@ -6,7 +6,7 @@ updates:
       interval: "weekly"
       day: "saturday"
     groups:
-      all-GHA:
+      github-actions:
         patterns:
           - "*"
 
@@ -16,16 +16,36 @@ updates:
       interval: "weekly"
       day: "saturday"
     groups:
-      all-nuget:
+      nuget:
         patterns:
           - "*"
-  
+        exclude-patterns:
+          - "*xunit*"
+          - "*verify*"
+          - "BenchmarkDotNet"
+          - "*coverlet*"
+          - "*GitHubActionsTestLogger*"
+          - "*Test.Sdk*"
+
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      nuget-testing:
+        patterns:
+          - "*xunit*"
+          - "*verify*"
+          - "BenchmarkDotNet"
+          - "*coverlet*"
+          - "*GitHubActionsTestLogger*"
+          - "*Test.Sdk*"
+
   - package-ecosystem: "npm"
     directory: "/src/PaperMalKing/ClientApp"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "monthly"
     groups:
-      all-npm:
+      npm:
         patterns:
           - "*"
