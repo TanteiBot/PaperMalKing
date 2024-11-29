@@ -1,7 +1,8 @@
 ﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2021-2024 N0D4N
 
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using GraphQL;
 using PaperMalKing.Shikimori.Wrapper.Abstractions;
 
@@ -9,15 +10,16 @@ namespace PaperMalKing.Shikimori.Wrapper;
 
 internal static class Queries
 {
-	public static CompositeFormat UserByIdQuery { get; } = CompositeFormat.Parse(
-		"""
-		query {{
-			users (ids: [{0}], limit: 1) {{
-				id,
-				nickname
-			}}
-		}}
-		""");
+	[SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:Parameter should not span multiple lines", Justification = "Not applicable to multiline strings")]
+	public static string GetUserByIdQuery(uint userId)
+		=> string.Create(CultureInfo.InvariantCulture, $$"""
+														query {
+															users (ids: [{{userId}}], limit: 1) {
+																id,
+																nickname
+															}
+														}
+														""");
 
 	public static GraphQLQuery UserByNicknameQuery { get; } = new(
 		"""

@@ -36,7 +36,7 @@ public sealed class ShikiClient(HttpClient _httpClient, ILogger<ShikiClient> _lo
 	{
 		_logger.RequestingUserInfo(userId);
 
-		var query = string.Format(CultureInfo.InvariantCulture, Queries.UserByIdQuery, userId);
+		var query = Queries.GetUserByIdQuery(userId);
 		var result = await _graphQlClient.SendQueryAsync<UserInfoResponse>(new GraphQLHttpRequest(query), cancellationToken);
 
 		return result.Data.Users[0];
