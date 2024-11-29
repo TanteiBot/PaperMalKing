@@ -7,7 +7,6 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class StaffEdge
 {
-	[JsonPropertyName("role")]
 	public required string Role { get; init; }
 
 	[JsonPropertyName("node")]

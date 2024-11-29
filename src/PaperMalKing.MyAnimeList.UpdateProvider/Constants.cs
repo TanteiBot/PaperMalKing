@@ -26,13 +26,13 @@ internal static class Constants
 	/// </summary>
 	public const string FavIcon = "https://cdn.myanimelist.net/images/MalAppIcon_180px.png";
 
-	public static readonly DiscordColor MalGreen = new("#2db039");
+	public static DiscordColor MalGreen { get; } = new("#2db039");
 
-	public static readonly DiscordColor MalBlue = new("#26448f");
+	public static DiscordColor MalBlue { get; } = new("#26448f");
 
-	public static readonly DiscordColor MalYellow = new("#f9d457");
+	public static DiscordColor MalYellow { get; } = new("#f9d457");
 
-	public static readonly DiscordColor MalRed = new("#a12f31");
+	public static DiscordColor MalRed { get; } = new("#a12f31");
 
-	public static readonly DiscordColor MalGrey = new("#c3c3c3");
+	public static DiscordColor MalGrey { get; } = new("#c3c3c3");
 }

@@ -10,7 +10,6 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class IdentifiableFavourite : IIdentifiable, IEquatable<IdentifiableFavourite>
 {
-	[JsonPropertyName("id")]
 	public uint Id { get; init; }
 
 	[JsonIgnore]

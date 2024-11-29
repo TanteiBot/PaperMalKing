@@ -10,10 +10,8 @@ public sealed class Studio
 {
 	private string? _url;
 
-	[JsonPropertyName("id")]
 	public required uint Id { get; init; }
 
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Name { get; init; }
 

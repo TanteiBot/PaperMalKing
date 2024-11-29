@@ -17,10 +17,8 @@ public sealed class FavouriteEntry : IEquatable<FavouriteEntry>, IComparable<Fav
 	[JsonIgnore]
 	public string? SpecificType { get; set; }
 
-	[JsonPropertyName("id")]
 	public uint Id { get; init; }
 
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(ClearableStringPoolingJsonConverter))]
 	public required string Name { get; init; }
 

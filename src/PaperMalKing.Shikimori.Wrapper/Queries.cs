@@ -9,7 +9,7 @@ namespace PaperMalKing.Shikimori.Wrapper;
 
 internal static class Queries
 {
-	public static readonly CompositeFormat UserByIdQuery = CompositeFormat.Parse(
+	public static CompositeFormat UserByIdQuery { get; } = CompositeFormat.Parse(
 		"""
 		query {{
 			users (ids: [{0}], limit: 1) {{
@@ -19,7 +19,7 @@ internal static class Queries
 		}}
 		""");
 
-	public static readonly GraphQLQuery UserByNicknameQuery = new(
+	public static GraphQLQuery UserByNicknameQuery { get; } = new(
 		"""
 		query ($nickname: String) {
 			users (search: $nickname, limit: 1) {

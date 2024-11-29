@@ -8,12 +8,10 @@ namespace PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 public sealed class Role
 {
-	[JsonPropertyName("roles")]
 	public required IReadOnlyList<string> Name { get; init; }
 
 	[JsonPropertyName("roles_russian")]
 	public required IReadOnlyList<string> RussianName { get; init; }
 
-	[JsonPropertyName("person")]
 	public Person? Person { get; init; }
 }

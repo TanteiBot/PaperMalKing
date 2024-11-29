@@ -12,26 +12,21 @@ public abstract class BaseListEntryNode<TMediaType, TStatus>
 	where TMediaType : unmanaged, Enum
 	where TStatus : unmanaged, Enum
 {
-	[JsonPropertyName("id")]
 	public required uint Id { get; init; }
 
-	[JsonPropertyName("title")]
 	[JsonConverter(typeof(ClearableStringPoolingJsonConverter))]
 	public required string Title { get; init; }
 
 	[JsonPropertyName("main_picture")]
 	public Picture? Picture { get; init; }
 
-	[JsonPropertyName("synopsis")]
 	public string? Synopsis { get; init; }
 
-	[JsonPropertyName("genres")]
 	public IReadOnlyList<Genre>? Genres { get; init; }
 
 	[JsonPropertyName("media_type")]
 	public required TMediaType MediaType { get; init; }
 
-	[JsonPropertyName("status")]
 	public required TStatus Status { get; init; }
 
 	public abstract string Url { get; }

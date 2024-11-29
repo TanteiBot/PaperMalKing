@@ -39,7 +39,7 @@ internal sealed class NullRateLimiter : RateLimiter
 [SuppressMessage("Style", "IDE0036:Order modifiers", Justification = "Visibility should appear before sealed")]
 file sealed class NullRateLimitLease : RateLimitLease
 {
-	public static readonly NullRateLimitLease Instance = new();
+	public static NullRateLimitLease Instance { get; } = new();
 
 	private NullRateLimitLease()
 	{

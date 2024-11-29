@@ -7,16 +7,13 @@ namespace PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 public sealed class Person : IMultiLanguageName
 {
-	[JsonPropertyName("id")]
 	public required uint Id { get; init; }
 
-	[JsonPropertyName("name")]
 	public required string Name { get; init; }
 
 	[JsonPropertyName("russian")]
 	public required string RussianName { get; init; }
 
-	[JsonPropertyName("isMangaka")]
 	public bool IsMangaka { get; init; }
 
 	public string Url => Utils.GetUrl("people", this.Id);

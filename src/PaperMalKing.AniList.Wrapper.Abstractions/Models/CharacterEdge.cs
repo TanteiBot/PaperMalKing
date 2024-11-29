@@ -2,12 +2,10 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class CharacterEdge
 {
-	[JsonPropertyName("voiceActors")]
 	public IReadOnlyList<Staff> VoiceActors { get; init; } = [];
 }

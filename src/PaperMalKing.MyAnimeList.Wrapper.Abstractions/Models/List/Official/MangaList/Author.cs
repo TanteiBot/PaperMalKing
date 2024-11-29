@@ -8,7 +8,6 @@ namespace PaperMalKing.MyAnimeList.Wrapper.Abstractions.Models.List.Official.Man
 
 public sealed class Author
 {
-	[JsonPropertyName("role")]
 	[JsonConverter(typeof(ClearableStringPoolingJsonConverter))]
 	public required string Role { get; init; }
 

@@ -3,15 +3,13 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "We follow AniListNaming")]
 public sealed class MediaListCollection
 {
-	[JsonPropertyName("lists")]
-	public IReadOnlyList<MediaListGroup> Lists { get; init; } = [];
+	public static MediaListCollection Empty { get; } = new();
 
-	public static readonly MediaListCollection Empty = new();
+	public IReadOnlyList<MediaListGroup> Lists { get; init; } = [];
 }

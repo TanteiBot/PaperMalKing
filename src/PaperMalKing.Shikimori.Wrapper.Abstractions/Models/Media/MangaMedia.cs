@@ -2,13 +2,11 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 public sealed class MangaMedia : BaseMedia
 {
-	[JsonPropertyName("publishers")]
 	public IReadOnlyList<Publisher> Publishers { get; init; } = [];
 
 	protected override string Type => "mangas";

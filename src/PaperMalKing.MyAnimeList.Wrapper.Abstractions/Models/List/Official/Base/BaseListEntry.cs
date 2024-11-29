@@ -13,7 +13,6 @@ public abstract class BaseListEntry<TNode, TStatus, TMediaType, TNodeStatus, TLi
 	where TNodeStatus : unmanaged, Enum
 	where TListStatus : unmanaged, Enum
 {
-	[JsonPropertyName("node")]
 	public required TNode Node { get; init; }
 
 	[JsonPropertyName("list_status")]

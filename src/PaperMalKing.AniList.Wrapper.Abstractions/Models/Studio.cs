@@ -9,19 +9,15 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class Studio : ISiteUrlable, IIdentifiable
 {
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Name { get; init; }
 
 	[JsonPropertyName("siteUrl")]
 	public required string Url { get; init; }
 
-	[JsonPropertyName("media")]
 	public Connection<Media> Media { get; init; } = Connection<Media>.Empty;
 
-	[JsonPropertyName("isAnimationStudio")]
 	public bool IsAnimationStudio { get; init; }
 
-	[JsonPropertyName("id")]
 	public uint Id { get; init; }
 }

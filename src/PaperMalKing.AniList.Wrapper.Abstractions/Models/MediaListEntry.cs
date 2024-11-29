@@ -6,45 +6,34 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text.Json.Serialization;
 using PaperMalKing.AniList.Wrapper.Abstractions.Models.Enums;
 
 namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class MediaListEntry
 {
-	[JsonPropertyName("status")]
 	public MediaListStatus Status { get; init; }
 
-	[JsonPropertyName("repeat")]
 	public ushort Repeat { get; init; }
 
-	[JsonPropertyName("notes")]
 	public string? Notes { get; init; }
 
-	[JsonPropertyName("advancedScores")]
 	public Dictionary<string, float>? AdvancedScores { get; init; }
 
-	[JsonPropertyName("point100Score")]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public byte Point100Score { get; init; }
 
-	[JsonPropertyName("point10Score")]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public byte Point10Score { get; init; }
 
-	[JsonPropertyName("point5Score")]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public byte Point5Score { get; init; }
 
-	[JsonPropertyName("point3Score")]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public byte Point3Score { get; init; }
 
-	[JsonPropertyName("id")]
 	public uint Id { get; init; }
 
-	[JsonPropertyName("customLists")]
 	public IReadOnlyList<CustomList>? CustomLists { get; init; } = [];
 
 	[SuppressMessage("Major Code Smell", "S109:Magic numbers should not be used", Justification = "Obvious from usage")]

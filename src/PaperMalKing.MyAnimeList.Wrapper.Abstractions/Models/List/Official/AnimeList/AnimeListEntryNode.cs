@@ -16,7 +16,6 @@ public sealed class AnimeListEntryNode : BaseListEntryNode<AnimeMediaType, Anime
 	[JsonPropertyName("num_episodes")]
 	public required uint Episodes { get; init; }
 
-	[JsonPropertyName("studios")]
 	public IReadOnlyList<Studio>? Studios { get; init; }
 
 	public override string Url => this._url ??= $"{Constants.BaseUrl}/anime/{this.Id}";

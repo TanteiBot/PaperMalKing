@@ -13,28 +13,28 @@ internal static class ProviderConstants
 
 	public const string IconUrl = "https://anilist.co/img/icons/android-chrome-512x512.png";
 
-	/// <summary>
+	/// <remarks>
 	/// Completed.
-	/// </summary>
-	public static readonly DiscordColor AniListGreen = new("#7bd555");
+	/// </remarks>
+	public static DiscordColor AniListGreen { get; } = new("#7bd555");
 
-	/// <summary>
+	/// <remarks>
 	/// Planned.
-	/// </summary>
-	public static readonly DiscordColor AniListOrange = new("#f79a63");
+	/// </remarks>
+	public static DiscordColor AniListOrange { get; } = new("#f79a63");
 
-	/// <summary>
+	/// <remarks>
 	/// Dropped.
-	/// </summary>
-	public static readonly DiscordColor AniListRed = new("#e85d75");
+	/// </remarks>
+	public static DiscordColor AniListRed { get; } = new("#e85d75");
 
-	/// <summary>
+	/// <remarks>
 	/// Paused.
-	/// </summary>
-	public static readonly DiscordColor AniListPeach = new("#fa7a7a");
+	/// </remarks>
+	public static DiscordColor AniListPeach { get; } = new("#fa7a7a");
 
-	/// <summary>
+	/// <remarks>
 	/// Current.
-	/// </summary>
-	public static readonly DiscordColor AniListBlue = new("#3db4f2");
+	/// </remarks>
+	public static DiscordColor AniListBlue { get; } = new("#3db4f2");
 }

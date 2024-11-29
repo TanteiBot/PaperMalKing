@@ -7,15 +7,14 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class Connection<T>
 {
-	[JsonPropertyName("pageInfo")]
-	public PageInfo? PageInfo { get; init; }
-
-	[JsonPropertyName("values")]
-	public required T[] Nodes { get; init; }
-
-	public static readonly Connection<T> Empty = new()
+	public static Connection<T> Empty { get; } = new()
 	{
 		PageInfo = PageInfo.FalseValue,
 		Nodes = [],
 	};
+
+	public PageInfo? PageInfo { get; init; }
+
+	[JsonPropertyName("values")]
+	public required T[] Nodes { get; init; }
 }

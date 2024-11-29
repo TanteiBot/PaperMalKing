@@ -13,60 +13,54 @@ public sealed class Favourites : IJsonOnDeserialized
 	private const string PeopleType = "people";
 	private const string MangasType = "mangas";
 
+	public static Favourites Empty { get; } = new();
+
 	private readonly List<FavouriteEntry> _allFavourites = new(20);
 
 	public IReadOnlyList<FavouriteEntry> AllFavourites => this._allFavourites;
 
-	[JsonPropertyName("animes")]
 	public IReadOnlyList<FavouriteEntry> Animes
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, "animes", "Anime");
 	}
 
-	[JsonPropertyName("mangas")]
 	public IReadOnlyList<FavouriteEntry> Mangas
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, MangasType, "Manga");
 	}
 
-	[JsonPropertyName("characters")]
 	public IReadOnlyList<FavouriteEntry> Characters
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, "characters", "Character");
 	}
 
-	[JsonPropertyName("people")]
 	public IReadOnlyList<FavouriteEntry> People
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, PeopleType, "Person");
 	}
 
-	[JsonPropertyName("mangakas")]
 	public IReadOnlyList<FavouriteEntry> Mangakas
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, PeopleType, "Mangaka");
 	}
 
-	[JsonPropertyName("seyu")]
 	public IReadOnlyList<FavouriteEntry> Seyu
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, PeopleType, "Seyu");
 	}
 
-	[JsonPropertyName("producers")]
 	public IReadOnlyList<FavouriteEntry> Producers
 	{
 		get => ThrowNotSupportedException();
 		init => this.SetTypesThenAddToAll(value, PeopleType, "Producer");
 	}
 
-	[JsonPropertyName("ranobe")]
 	public IReadOnlyList<FavouriteEntry> Ranobe
 	{
 		get => ThrowNotSupportedException();
@@ -83,8 +77,6 @@ public sealed class Favourites : IJsonOnDeserialized
 
 		this._allFavourites.AddRange(entries);
 	}
-
-	public static readonly Favourites Empty = new();
 
 	void IJsonOnDeserialized.OnDeserialized()
 	{

@@ -11,13 +11,10 @@ public sealed class CheckForUpdatesResponse
 							   this.ListActivities.PageInfo!.HasNextPage ||
 							   this.Reviews.PageInfo!.HasNextPage;
 
-	[JsonPropertyName("User")]
 	public required User User { get; init; }
 
-	[JsonPropertyName("AnimeList")]
 	public MediaListCollection AnimeList { get; init; } = MediaListCollection.Empty;
 
-	[JsonPropertyName("MangaList")]
 	public MediaListCollection MangaList { get; init; } = MediaListCollection.Empty;
 
 	[JsonPropertyName("ActivitiesPage")]

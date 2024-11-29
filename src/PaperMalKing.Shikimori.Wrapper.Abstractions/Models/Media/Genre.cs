@@ -8,7 +8,6 @@ namespace PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 public sealed class Genre : IMultiLanguageName
 {
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Name { get; init; }
 

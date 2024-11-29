@@ -20,10 +20,8 @@ public abstract class BaseListEntryStatus<TListStatus>
 		return Unsafe.As<TListStatus, byte>(ref status);
 	}
 
-	[JsonPropertyName("status")]
 	public required TListStatus Status { get; init; }
 
-	[JsonPropertyName("score")]
 	public required byte Score { get; init; }
 
 	public abstract ulong ProgressedSubEntries { get; }
@@ -32,10 +30,8 @@ public abstract class BaseListEntryStatus<TListStatus>
 
 	public abstract ulong ReprogressTimes { get; }
 
-	[JsonPropertyName("tags")]
 	public IReadOnlyList<string>? Tags { get; init; }
 
-	[JsonPropertyName("comments")]
 	public string? Comments { get; init; }
 
 	[JsonPropertyName("updated_at")]

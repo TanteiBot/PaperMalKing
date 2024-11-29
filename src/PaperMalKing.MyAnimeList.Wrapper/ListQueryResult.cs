@@ -2,7 +2,6 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System;
-using System.Text.Json.Serialization;
 using PaperMalKing.MyAnimeList.Wrapper.Abstractions.Models.List.Official.Base;
 
 namespace PaperMalKing.MyAnimeList.Wrapper;
@@ -20,6 +19,5 @@ internal sealed class ListQueryResult<T, TNode, TStatus, TMediaType, TNodeStatus
 		Data = [],
 	};
 
-	[JsonPropertyName("data")]
 	public required T[] Data { get; init; }
 }

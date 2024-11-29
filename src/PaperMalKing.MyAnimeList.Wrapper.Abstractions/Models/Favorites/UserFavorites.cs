@@ -7,6 +7,15 @@ namespace PaperMalKing.MyAnimeList.Wrapper.Abstractions.Models.Favorites;
 
 public sealed class UserFavorites
 {
+	public static UserFavorites Empty { get; } = new()
+	{
+		FavoriteAnime = [],
+		FavoriteManga = [],
+		FavoriteCharacters = [],
+		FavoritePeople = [],
+		FavoriteCompanies = [],
+	};
+
 	public required IReadOnlyList<FavoriteAnime> FavoriteAnime { get; init; }
 
 	public required IReadOnlyList<FavoriteManga> FavoriteManga { get; init; }
@@ -16,15 +25,6 @@ public sealed class UserFavorites
 	public required IReadOnlyList<FavoritePerson> FavoritePeople { get; init; }
 
 	public required IReadOnlyList<FavoriteCompany> FavoriteCompanies { get; init; }
-
-	public static readonly UserFavorites Empty = new()
-	{
-		FavoriteAnime = [],
-		FavoriteManga = [],
-		FavoriteCharacters = [],
-		FavoritePeople = [],
-		FavoriteCompanies = [],
-	};
 
 	public int Count =>
 		this.FavoriteAnime.Count + this.FavoriteManga.Count + this.FavoriteCharacters.Count + this.FavoritePeople.Count +

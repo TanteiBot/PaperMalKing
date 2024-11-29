@@ -11,11 +11,11 @@ internal static class Constants
 
 	public const string IconUrl = "https://shikimori.me/favicons/opera-icon-228x228.png";
 
-	public static readonly DiscordColor ShikiGreen = new("#419541");
+	public static DiscordColor ShikiGreen { get; } = new("#419541");
 
-	public static readonly DiscordColor ShikiRed = new("#FC575E");
+	public static DiscordColor ShikiRed { get; } = new("#FC575E");
 
-	public static readonly DiscordColor ShikiGrey = new("#7b8084");
+	public static DiscordColor ShikiGrey { get; } = new("#7b8084");
 
-	public static readonly DiscordColor ShikiBlue = new("#176093");
+	public static DiscordColor ShikiBlue { get; } = new("#176093");
 }

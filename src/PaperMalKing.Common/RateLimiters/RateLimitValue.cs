@@ -7,7 +7,7 @@ namespace PaperMalKing.Common.RateLimiters;
 
 public sealed class RateLimitValue
 {
-	public static readonly RateLimitValue Empty = new();
+	public static RateLimitValue Empty { get; } = new();
 
 	public int AmountOfRequests { get; }
 

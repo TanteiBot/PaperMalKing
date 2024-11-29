@@ -19,7 +19,6 @@ public sealed class MangaListEntryNode : BaseListEntryNode<MangaMediaType, Manga
 	[JsonPropertyName("num_chapters")]
 	public required uint TotalChapters { get; init; }
 
-	[JsonPropertyName("authors")]
 	public IReadOnlyList<Author>? Authors { get; init; }
 
 	public override string Url => this._url ??= $"{Constants.BaseUrl}/manga/{this.Id}";

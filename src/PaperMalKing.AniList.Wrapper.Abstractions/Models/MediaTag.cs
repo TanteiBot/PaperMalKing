@@ -8,11 +8,9 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class MediaTag
 {
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Name { get; init; }
 
-	[JsonPropertyName("rank")]
 	public byte Rank { get; init; }
 
 	[JsonPropertyName("isMediaSpoiler")]

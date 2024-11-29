@@ -8,10 +8,8 @@ namespace PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 public sealed class Studio
 {
-	[JsonPropertyName("id")]
 	public required uint Id { get; init; }
 
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Name { get; init; }
 

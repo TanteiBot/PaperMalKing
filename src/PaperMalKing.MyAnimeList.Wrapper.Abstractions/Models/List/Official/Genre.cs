@@ -8,7 +8,6 @@ namespace PaperMalKing.MyAnimeList.Wrapper.Abstractions.Models.List.Official;
 
 public sealed class Genre
 {
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Name { get; init; }
 }

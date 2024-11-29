@@ -9,25 +9,19 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class User : ISiteUrlable, IImageble
 {
-	[JsonPropertyName("id")]
 	public uint Id { get; init; }
 
-	[JsonPropertyName("name")]
 	[JsonConverter(typeof(ClearableStringPoolingJsonConverter))]
 	public string? Name { get; init; }
 
 	[JsonPropertyName("siteUrl")]
 	public required string Url { get; init; }
 
-	[JsonPropertyName("image")]
 	public Image? Image { get; init; }
 
-	[JsonPropertyName("options")]
 	public UserOptions Options { get; init; } = null!;
 
-	[JsonPropertyName("mediaListOptions")]
 	public MediaListOptions? MediaListOptions { get; init; }
 
-	[JsonPropertyName("favourites")]
 	public Favourites Favourites { get; init; } = Favourites.Empty;
 }

@@ -15,12 +15,9 @@ public sealed class Review : ISiteUrlable
 	[JsonPropertyName("siteUrl")]
 	public required string Url { get; init; }
 
-	[JsonPropertyName("summary")]
 	public string? Summary { get; init; }
 
-	[JsonPropertyName("media")]
 	public required Media Media { get; init; }
 
-	[JsonPropertyName("format")]
 	public MediaFormat Format { get; init; }
 }

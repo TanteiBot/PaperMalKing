@@ -14,14 +14,11 @@ public sealed class HistoryTarget : IMultiLanguageName
 
 	public ListEntryType Type { get; init; }
 
-	[JsonPropertyName("status")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public required string Status { get; init; }
 
-	[JsonPropertyName("id")]
 	public ulong Id { get; init; }
 
-	[JsonPropertyName("url")]
 	public string Url
 	{
 		get => this._url;
@@ -34,23 +31,18 @@ public sealed class HistoryTarget : IMultiLanguageName
 		}
 	}
 
-	[JsonPropertyName("episodes")]
 	public uint? Episodes { get; init; }
 
 	[JsonPropertyName("episodes_aired")]
 	public uint? EpisodesAired { get; init; }
 
-	[JsonPropertyName("volumes")]
 	public uint? Volumes { get; init; }
 
-	[JsonPropertyName("chapters")]
 	public uint? Chapters { get; init; }
 
-	[JsonPropertyName("kind")]
 	[JsonConverter(typeof(StringPoolingJsonConverter))]
 	public string? Kind { get; init; }
 
-	[JsonPropertyName("name")]
 	public required string Name { get; init; }
 
 	[JsonPropertyName("russian")]

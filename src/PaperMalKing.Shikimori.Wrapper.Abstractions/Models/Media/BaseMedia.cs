@@ -2,19 +2,15 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace PaperMalKing.Shikimori.Wrapper.Abstractions.Models.Media;
 
 public abstract class BaseMedia
 {
-	[JsonPropertyName("genres")]
 	public IReadOnlyList<Genre> Genres { get; init; } = [];
 
-	[JsonPropertyName("description")]
 	public string? Description { get; init; }
 
-	[JsonPropertyName("personRoles")]
 	public IReadOnlyList<Role> PersonRoles { get; init; } = [];
 
 	protected abstract string Type { get; }

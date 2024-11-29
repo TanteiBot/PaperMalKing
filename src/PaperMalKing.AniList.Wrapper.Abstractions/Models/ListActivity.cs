@@ -7,15 +7,12 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class ListActivity
 {
-	[JsonPropertyName("status")]
 	public required string Status { get; init; }
 
-	[JsonPropertyName("progress")]
 	public string? Progress { get; init; }
 
 	[JsonPropertyName("createdAt")]
 	public long CreatedAtTimestamp { get; init; }
 
-	[JsonPropertyName("media")]
 	public required Media Media { get; init; }
 }

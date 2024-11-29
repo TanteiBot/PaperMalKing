@@ -8,7 +8,6 @@ namespace PaperMalKing.AniList.Wrapper.Abstractions.Models;
 
 public sealed class MediaListOptions
 {
-	[JsonPropertyName("scoreFormat")]
 	public ScoreFormat ScoreFormat { get; init; }
 
 	[JsonPropertyName("animeList")]

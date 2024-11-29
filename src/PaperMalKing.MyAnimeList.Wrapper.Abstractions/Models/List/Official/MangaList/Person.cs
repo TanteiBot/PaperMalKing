@@ -10,7 +10,6 @@ public sealed class Person
 {
 	private string? _url;
 
-	[JsonPropertyName("id")]
 	public required uint Id { get; init; }
 
 	[JsonPropertyName("first_name")]
