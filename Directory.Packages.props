@@ -82,11 +82,11 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />  
 
     <!-- Analyzers-->
-    <GlobalPackageReference Include="Meziantou.Analyzer" Version="2.0.180">
+    <GlobalPackageReference Include="Meziantou.Analyzer" Version="2.0.182">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </GlobalPackageReference>
-    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
+    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="10.3.0.106239">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </GlobalPackageReference>
