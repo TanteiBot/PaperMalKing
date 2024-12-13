@@ -8,15 +8,15 @@
     <EntityFrameworkCoreVersion>9.0.0</EntityFrameworkCoreVersion>
     <GraphQLClientVersion>6.1.0</GraphQLClientVersion>
     <DSharpPlusVersion>4.5.0</DSharpPlusVersion>
-    <CommunityTookitVersion>8.3.2</CommunityTookitVersion>
+    <CommunityTookitVersion>8.4.0</CommunityTookitVersion>
 
     <VerifyVersion>28.4.0</VerifyVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Logging -->
     <PackageVersion Include="Serilog" Version="4.2.0" />
-    <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
-    <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
@@ -74,7 +74,7 @@
     <PackageVersion Include="System.Threading.RateLimiting" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.EnumStrings" Version="8.0.0-rc.2.23510.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.12.19" />
-    <GlobalPackageReference Include="GitVersion.MsBuild" Version="6.0.5">
+    <GlobalPackageReference Include="GitVersion.MsBuild" Version="6.1.0">
         <PrivateAssets>All</PrivateAssets>
     </GlobalPackageReference>
       
