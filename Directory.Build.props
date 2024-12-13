@@ -10,7 +10,7 @@
         
         <!-- GitVersion -->
         <GitVersion_NoFetchEnabled>true</GitVersion_NoFetchEnabled>
-        <GitVersionTargetFramework>net8.0</GitVersionTargetFramework>
+        <GitVersionTargetFramework>net9.0</GitVersionTargetFramework>
 
         <!-- Nuget -->
         <NuGetAudit>true</NuGetAudit>
