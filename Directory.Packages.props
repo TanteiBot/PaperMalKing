@@ -8,15 +8,15 @@
     <EntityFrameworkCoreVersion>9.0.0</EntityFrameworkCoreVersion>
     <GraphQLClientVersion>6.1.0</GraphQLClientVersion>
     <DSharpPlusVersion>4.5.0</DSharpPlusVersion>
-    <CommunityTookitVersion>8.3.2</CommunityTookitVersion>
+    <CommunityTookitVersion>8.4.0</CommunityTookitVersion>
 
     <VerifyVersion>28.5.0</VerifyVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Logging -->
     <PackageVersion Include="Serilog" Version="4.2.0" />
-    <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
-    <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
@@ -74,7 +74,7 @@
     <PackageVersion Include="System.Threading.RateLimiting" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.EnumStrings" Version="8.0.0-rc.2.23510.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.12.19" />
-    <GlobalPackageReference Include="GitVersion.MsBuild" Version="6.0.5">
+    <GlobalPackageReference Include="GitVersion.MsBuild" Version="6.1.0">
         <PrivateAssets>All</PrivateAssets>
     </GlobalPackageReference>
       
@@ -136,7 +136,7 @@
 
 
     <!-- Implicit -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" />
     <PackageVersion Include="Microsoft.NETCore.Platforms" Version="8.0.0-preview.7.23375.6" />
     <PackageVersion Include="Microsoft.Netcore.Targets" Version="6.0.0-preview.4.21253.7" />
     <PackageVersion Include="System.Collections.Immutable" Version="9.0.0" />
@@ -150,10 +150,10 @@
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
     <PackageVersion Include="System.Threading.Channels" Version="9.0.0" />
     <PackageVersion Include="System.Formats.Asn1" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.11.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.11.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageVersion Include="System.Net.Security" Version="4.3.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.12.0" />
   </ItemGroup>
 </Project>
