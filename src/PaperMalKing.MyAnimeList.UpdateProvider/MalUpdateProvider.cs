@@ -231,7 +231,7 @@ internal sealed class MalUpdateProvider(ILogger<MalUpdateProvider> logger, IOpti
 
 		if (mangaListUpdates is not [])
 		{
-			foreach (var deb in mangaListUpdates)
+			foreach (var deb in mangaListUpdates.OrderBy(x => x.Timestamp))
 			{
 				yield return FormatEmbed(dbUser, deb);
 				dbUser.LastUpdatedMangaListTimestamp = deb.Timestamp!.Value;
@@ -267,7 +267,7 @@ internal sealed class MalUpdateProvider(ILogger<MalUpdateProvider> logger, IOpti
 		}
 
 		var result = new List<DiscordEmbedBuilder>();
-		foreach (var baseListEntry in listUpdates.Where(x => x.Status.UpdatedAt > latestUpdateDateTime))
+		foreach (var baseListEntry in listUpdates.Where(x => x.Status.UpdatedAt > latestUpdateDateTime).OrderBy(x => x.Status.UpdatedAt))
 		{
 			var eb = await baseListEntry
 				.ToDiscordEmbedBuilderAsync<TLe, TNode, TStatus, TMediaType, TNodeStatus, TListStatus>(user, _client, dbUser, ct);
