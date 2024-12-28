@@ -10,7 +10,9 @@
     <DSharpPlusVersion>4.5.0</DSharpPlusVersion>
     <CommunityTookitVersion>8.4.0</CommunityTookitVersion>
 
-    <VerifyVersion>28.6.1</VerifyVersion>
+    <VerifyVersion>28.7.0</VerifyVersion>
+      
+    <GrpcVersion>2.67.0</GrpcVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Logging -->
@@ -122,21 +124,21 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </GlobalPackageReference>
+    <PackageVersion Include="xunit.analyzers" Version="1.18.0" />
       
     <!-- Testing -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.v3" Version="1.0.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.4.1" />
     <PackageVersion Include="Verify" Version="$(VerifyVersion)" />
-    <PackageVersion Include="Verify.Xunit" Version="$(VerifyVersion)" />
+    <PackageVersion Include="Verify.XunitV3" Version="$(VerifyVersion)" />
 
 
 
 
     <!-- Implicit -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" />
     <PackageVersion Include="Microsoft.NETCore.Platforms" Version="8.0.0-preview.7.23375.6" />
     <PackageVersion Include="Microsoft.Netcore.Targets" Version="6.0.0-preview.4.21253.7" />
     <PackageVersion Include="System.Collections.Immutable" Version="9.0.0" />
@@ -153,7 +155,12 @@
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" />
     <PackageVersion Include="System.Net.Security" Version="4.3.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.12.0" />
+    <PackageVersion Include="Google.Protobuf" Version="3.29.2" />
+    <PackageVersion Include="Grpc.Core.Api" Version="$(GrpcVersion)" />
+    <PackageVersion Include="Grpc.Net.Common" Version="$(GrpcVersion)" />
+    <PackageVersion Include="Grpc.Net.Client" Version="$(GrpcVersion)" />
   </ItemGroup>
 </Project>
