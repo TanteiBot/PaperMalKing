@@ -24,7 +24,7 @@ namespace PaperMalKing.Database.CompiledModels
                 propertyCount: 3,
                 navigationCount: 1,
                 foreignKeyCount: 1,
-                unnamedIndexCount: 1,
+                unnamedIndexCount: 2,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -56,6 +56,9 @@ namespace PaperMalKing.Database.CompiledModels
             runtimeEntityType.SetPrimaryKey(key);
 
             var index = runtimeEntityType.AddIndex(
+                new[] { id });
+
+            var index0 = runtimeEntityType.AddIndex(
                 new[] { userId });
 
             return runtimeEntityType;

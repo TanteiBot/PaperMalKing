@@ -11,7 +11,7 @@ namespace PaperMalKing.Database.CompiledModels
     public partial class DatabaseContextModel
     {
         private DatabaseContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("a8c72d27-26ab-4921-ab3d-482a6c57a156"), entityTypeCount: 19)
+            : base(skipDetectChanges: false, modelId: new Guid("f66843e2-82bf-4c5a-ad00-b7e223290643"), entityTypeCount: 19)
         {
         }
 
