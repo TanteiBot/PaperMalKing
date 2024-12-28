@@ -10,9 +10,10 @@ public sealed class FieldsToRequestTests
 	[Fact]
 	public void MangaFieldsToRequestAndAnimeFieldsToRequestHaveSameStartingValues()
 	{
+		const int enumStart = 4;
 		var aftr = Enum.GetNames<AnimeFieldsToRequest>();
 		var mftr = Enum.GetNames<MangaFieldsToRequest>();
-		Assert.True(aftr.AsSpan()[..4].SequenceEqual(mftr.AsSpan()[..4]));
+		Assert.True(aftr.AsSpan()[..enumStart].SequenceEqual(mftr.AsSpan()[..enumStart]));
 	}
 
 	[Fact]

@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <NoWarn>$(NoWarn);VSTHRD200;CA1515;</NoWarn>
         <IsPublishable>false</IsPublishable>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,11 +14,12 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.v3"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="GitHubActionsTestLogger"/>
         <PackageReference Include="Verify"/>
-        <PackageReference Include="Verify.Xunit"/>
+        <PackageReference Include="Verify.XunitV3"/>
+        <PackageReference Include="xunit.analyzers" />
     </ItemGroup>
 </Project>
