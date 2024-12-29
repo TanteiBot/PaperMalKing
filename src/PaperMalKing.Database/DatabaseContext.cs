@@ -146,6 +146,7 @@ public sealed class DatabaseContext(DbContextOptions<DatabaseContext> options) :
 				k.UserId,
 			});
 			sf.HasIndex(p => p.UserId);
+			sf.HasIndex(p => p.Id);
 		});
 
 		modelBuilder.Entity<AniListUser>(au =>
@@ -170,6 +171,7 @@ public sealed class DatabaseContext(DbContextOptions<DatabaseContext> options) :
 				k.UserId,
 			});
 			af.HasIndex(x => x.UserId);
+			af.HasIndex(x => x.Id);
 		});
 	}
 }
