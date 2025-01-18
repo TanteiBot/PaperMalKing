@@ -39,8 +39,8 @@ public abstract class BaseUserFeaturesService<TUser, TFeature>
 		var dbUser = db.Set<TUser>().TagWith("Query user to disable a feature").TagWithCallSite().FirstOrDefault(su => su.DiscordUserId == userId) ??
 					 throw new UserFeaturesException("You must register first before disabling features");
 		var features = dbUser.Features;
-		var f = Unsafe.As<TFeature, ulong>(ref features);
-		var featureValue = Unsafe.As<TFeature, ulong>(ref feature);
+		var f = Unsafe.BitCast<TFeature, ulong>(features);
+		var featureValue = Unsafe.BitCast<TFeature, ulong>(feature);
 		if (!features.HasFlag(feature))
 		{
 			throw new UserFeaturesException("This feature wasn't enabled for you, so you cant disable it");
@@ -48,7 +48,7 @@ public abstract class BaseUserFeaturesService<TUser, TFeature>
 
 		f &= ~featureValue;
 
-		dbUser.Features = Unsafe.As<ulong, TFeature>(ref f);
+		dbUser.Features = Unsafe.BitCast<ulong, TFeature>(f);
 		await this.DisableFeatureCleanupAsync(db, dbUser, feature);
 		await db.SaveChangesAndThrowOnNoneAsync(CancellationToken.None);
 	}

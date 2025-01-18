@@ -27,7 +27,7 @@ public sealed class CustomColorService<TUser, TUpdateType>(IDbContextFactory<Dat
 
 		var user = db.Set<TUser>().TagWith("Getting user to set color").TagWithCallSite()
 					 .FirstOrDefault(u => u.DiscordUserId == userId) ?? throw new UserProcessingException("You must create account first");
-		var byteType = Unsafe.As<TUpdateType, byte>(ref updateType);
+		var byteType = Unsafe.BitCast<TUpdateType, byte>(updateType);
 
 		user.Colors.RemoveAll(c => c.UpdateType == byteType);
 		user.Colors.Add(new()
@@ -45,7 +45,7 @@ public sealed class CustomColorService<TUser, TUpdateType>(IDbContextFactory<Dat
 		var user = db.Set<TUser>().TagWith("Getting user to remove color").TagWithCallSite().FirstOrDefault(u => u.DiscordUserId == userId) ??
 				   throw new UserProcessingException("You must create account first");
 
-		var byteType = Unsafe.As<TUpdateType, byte>(ref updateType);
+		var byteType = Unsafe.BitCast<TUpdateType, byte>(updateType);
 
 		user.Colors.RemoveAll(c => c.UpdateType == byteType);
 

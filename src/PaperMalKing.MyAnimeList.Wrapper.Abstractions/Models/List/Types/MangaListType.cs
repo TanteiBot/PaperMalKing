@@ -17,7 +17,7 @@ public abstract class MangaListType : IListType
 		where TRequestOptions : unmanaged, Enum, allows ref struct
 	{
 		Debug.Assert(typeof(TRequestOptions) == typeof(MangaFieldsToRequest), $"Request options must be a {nameof(MangaFieldsToRequest)}");
-		var fields = Unsafe.As<TRequestOptions, MangaFieldsToRequest>(ref options);
+		var fields = Unsafe.BitCast<TRequestOptions, MangaFieldsToRequest>(options);
 		var tags = fields.HasFlag(Tags) ? ",tags" : "";
 		var comments = fields.HasFlag(Comments) ? ",comments" : "";
 		var dates = fields.HasFlag(Dates) ? ",start_date,finish_date" : "";

@@ -17,7 +17,7 @@ public abstract class BaseListEntryStatus<TListStatus>
 	{
 		Debug.Assert(Enum.GetUnderlyingType(typeof(TListStatus)) == typeof(byte), $"{nameof(TListStatus)} must be a {nameof(Byte)}");
 		var status = this.Status;
-		return Unsafe.As<TListStatus, byte>(ref status);
+		return Unsafe.BitCast<TListStatus, byte>(status);
 	}
 
 	[JsonPropertyName("status")]
