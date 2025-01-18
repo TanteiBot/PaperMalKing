@@ -87,9 +87,9 @@ internal static class Extensions
 
 		if (typeof(TRequestOptions) == typeof(MangaFieldsToRequest) && features.HasFlag(MalUserFeatures.Mangakas))
 		{
-			var mangaFields = Unsafe.As<AnimeFieldsToRequest, MangaFieldsToRequest>(ref fields);
+			var mangaFields = Unsafe.BitCast<AnimeFieldsToRequest, MangaFieldsToRequest>(fields);
 			mangaFields |= MangaFieldsToRequest.Authors;
-			return Unsafe.As<MangaFieldsToRequest, TRequestOptions>(ref mangaFields);
+			return Unsafe.BitCast<MangaFieldsToRequest, TRequestOptions>(mangaFields);
 		}
 
 		if (features.HasFlag(MalUserFeatures.Studio))
@@ -97,7 +97,7 @@ internal static class Extensions
 			fields |= AnimeFieldsToRequest.Studio;
 		}
 
-		return Unsafe.As<AnimeFieldsToRequest, TRequestOptions>(ref fields);
+		return Unsafe.BitCast<AnimeFieldsToRequest, TRequestOptions>(fields);
 	}
 
 	public static T ToDbFavorite<T>(this BaseFavorite baseFavorite, MalUser user)
