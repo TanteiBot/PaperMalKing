@@ -5,7 +5,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>9.0.0</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreVersion>9.0.1</EntityFrameworkCoreVersion>
     <GraphQLClientVersion>6.1.0</GraphQLClientVersion>
     <DSharpPlusVersion>4.5.0</DSharpPlusVersion>
     <CommunityTookitVersion>8.4.0</CommunityTookitVersion>
@@ -21,8 +21,8 @@
     <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="9.1.0" />
 
     <!-- Discord -->
     <PackageVersion Include="DSharpPlus" Version="$(DSharpPlusVersion)" />
@@ -45,35 +45,35 @@
     </PackageVersion>
 
     <!-- Hosting -->
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.1" />
 
     <!-- DI -->
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
 
     <!-- Configuration -->
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.1" />
 
     <!-- Resilience -->
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.1" />
 
     <!-- Web -->
     <PackageVersion Include="AspNet.Security.OAuth.Discord" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.1" />
 
     <!-- Misc -->
     <PackageVersion Include="CommunityToolkit.Diagnostics" Version="$(CommunityTookitVersion)" />
     <PackageVersion Include="Humanizer.Core" Version="2.14.1" />
     <PackageVersion Include="AngleSharp" Version="1.2.0" />
     <PackageVersion Include="JikanDotNet" Version="2.9.1" />
-    <PackageVersion Include="System.Threading.RateLimiting" Version="9.0.0" />
+    <PackageVersion Include="System.Threading.RateLimiting" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Extensions.EnumStrings" Version="8.0.0-rc.2.23510.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.12.19" />
     <GlobalPackageReference Include="GitVersion.MsBuild" Version="6.1.0">
