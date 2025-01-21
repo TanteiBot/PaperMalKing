@@ -36,7 +36,7 @@
     "path": "^0.12.7",
     "sass": "^1.83.0",
     "typescript": "^5.7.2",
-    "vite": "^6.0.6",
+    "vite": "^6.0.9",
     "vite-plugin-mkcert": "^1.17.6"
   }
 }
