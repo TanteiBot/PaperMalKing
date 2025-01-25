@@ -63,12 +63,7 @@ internal sealed class MalUpdateProvider(ILogger<MalUpdateProvider> logger, IOpti
 
 		using var db = _dbContextFactory.CreateDbContext();
 
-		var users = db.MalUsers.TagWith("Query users for update checking").TagWithCallSite().Where(user => user.DiscordUser.Guilds.Any() &&
-			// Is bitwise to allow executing as SQL
-			((user.Features & MalUserFeatures.AnimeList) != 0 || (user.Features & MalUserFeatures.MangaList) != 0 ||
-			 (user.Features & MalUserFeatures.Favorites) != 0)).OrderBy(_ => EF.Functions.Random()).ToArray();
-
-		foreach (var dbUser in users)
+		foreach (var dbUser in db.MalUsersForChecking)
 		{
 			if (cancellationToken.IsCancellationRequested)
 			{

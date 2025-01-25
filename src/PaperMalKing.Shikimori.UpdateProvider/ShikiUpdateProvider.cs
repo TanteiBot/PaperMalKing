@@ -48,10 +48,7 @@ internal sealed class ShikiUpdateProvider(ILogger<ShikiUpdateProvider> logger, I
 
 		using var db = _dbContextFactory.CreateDbContext();
 
-		foreach (var dbUser in db.ShikiUsers.TagWith("Query users for update checking").TagWithCallSite().Where(u =>
-					 u.DiscordUser.Guilds.Any() && ((u.Features & ShikiUserFeatures.AnimeList) != 0 ||
-													(u.Features & ShikiUserFeatures.MangaList) != 0 ||
-													(u.Features & ShikiUserFeatures.Favourites) != 0)).OrderBy(_ => EF.Functions.Random()).ToArray())
+		foreach (var dbUser in db.ShikiUsersForChecking)
 		{
 			if (cancellationToken.IsCancellationRequested)
 			{

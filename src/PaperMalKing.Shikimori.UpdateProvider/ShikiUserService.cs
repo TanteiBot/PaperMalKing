@@ -38,7 +38,7 @@ internal sealed class ShikiUserService(IShikiClient _client, ILogger<ShikiUserSe
 					"You already have your account connected. If you want to switch to another account, remove current one, then add the new one.");
 			}
 
-			guild = db.DiscordGuilds.TagWith("Query guild to add existing user to it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+			guild = db.GetGuildById(guildId);
 			if (guild is null)
 			{
 				throw new UserProcessingException(BaseUser.FromUsername(username),
@@ -50,7 +50,7 @@ internal sealed class ShikiUserService(IShikiClient _client, ILogger<ShikiUserSe
 			return BaseUser.FromUsername(username);
 		}
 
-		guild = db.DiscordGuilds.TagWith("Query guild to add new user to it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+		guild = db.GetGuildById(guildId);
 		if (guild is null)
 		{
 			throw new UserProcessingException(BaseUser.FromUsername(username),
@@ -62,7 +62,7 @@ internal sealed class ShikiUserService(IShikiClient _client, ILogger<ShikiUserSe
 			throw new UserProcessingException(BaseUser.Empty, "You must provide username if you arent already tracked by this bot");
 		}
 
-		var dUser = db.DiscordUsers.TagWith("Query discord user to link AniList user to it").TagWithCallSite().Include(x => x.Guilds).FirstOrDefault(du => du.DiscordUserId == userId);
+		var dUser = db.GetDiscordUserById(userId);
 		var shikiUser = await _client.GetUserByNicknameAsync(username);
 		var history = await _client.GetUserHistoryAsync(shikiUser.Id, 1, 1, HistoryRequestOptions.Any);
 		var favourites = await _client.GetUserFavouritesAsync(shikiUser.Id);

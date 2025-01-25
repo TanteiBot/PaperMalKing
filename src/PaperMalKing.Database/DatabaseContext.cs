@@ -2,7 +2,9 @@
 // Copyright (C) 2021-2024 N0D4N
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -174,4 +176,46 @@ public sealed class DatabaseContext(DbContextOptions<DatabaseContext> options) :
 			af.HasIndex(x => x.Id);
 		});
 	}
+
+	private static readonly Func<DatabaseContext, IEnumerable<MalUser>> GetMalUsersQuery =
+		EF.CompileQuery<DatabaseContext, MalUser>(db => db.MalUsers.TagWith("Query users for update checking")
+														  .Where(user => user.DiscordUser.Guilds.Any() &&
+																		 // Is bitwise to allow executing as SQL
+																		 ((user.Features & MalUserFeatures.AnimeList) != 0 ||
+																		  (user.Features & MalUserFeatures.MangaList) != 0 ||
+																		  (user.Features & MalUserFeatures.Favorites) != 0))
+														  .OrderBy(_ => EF.Functions.Random()));
+
+	private static readonly Func<DatabaseContext, IEnumerable<ShikiUser>> GetShikiUsersQuery =
+		EF.CompileQuery<DatabaseContext, ShikiUser>(db => db.ShikiUsers.TagWith("Query users for update checking").Where(u =>
+			u.DiscordUser.Guilds.Any() && ((u.Features & ShikiUserFeatures.AnimeList) != 0 ||
+										   (u.Features & ShikiUserFeatures.MangaList) != 0 ||
+										   (u.Features & ShikiUserFeatures.Favourites) != 0)).OrderBy(_ => EF.Functions.Random()));
+
+	private static readonly Func<DatabaseContext, IEnumerable<AniListUser>> GetAniListUsersQuery =
+		EF.CompileQuery<DatabaseContext, AniListUser>(db => db.AniListUsers.TagWith("Query users for update checking").Where(u =>
+																  u.DiscordUser.Guilds.Any() &&
+																  ((u.Features & AniListUserFeatures.AnimeList) != 0 ||
+																   (u.Features & AniListUserFeatures.MangaList) != 0 ||
+																   (u.Features & AniListUserFeatures.Favourites) != 0 ||
+																   (u.Features & AniListUserFeatures.Reviews) != 0))
+															  .OrderBy(static _ => EF.Functions.Random()));
+
+	private static readonly Func<DatabaseContext, ulong, DiscordGuild?> GuildByIdQuery = EF.CompileQuery((DatabaseContext db, ulong guildId) =>
+		db.DiscordGuilds.TagWith("Get guild by id").FirstOrDefault(g => g.DiscordGuildId == guildId));
+
+	private static readonly Func<DatabaseContext, ulong, DiscordUser?> DiscordUserByIdQuery = EF.CompileQuery((DatabaseContext db, ulong userId) =>
+		db.DiscordUsers.TagWith("Get discord user by id").Include(x => x.Guilds).FirstOrDefault(du => du.DiscordUserId == userId));
+
+#pragma warning disable S2365
+	public IReadOnlyList<MalUser> MalUsersForChecking => GetMalUsersQuery(this).ToArray();
+
+	public IReadOnlyList<ShikiUser> ShikiUsersForChecking => GetShikiUsersQuery(this).ToArray();
+
+	public IReadOnlyList<AniListUser> AniListUsersForChecking => GetAniListUsersQuery(this).ToArray();
+
+	public DiscordGuild? GetGuildById(ulong guildId) => GuildByIdQuery(this, guildId);
+
+	public DiscordUser? GetDiscordUserById(ulong userId) => DiscordUserByIdQuery(this, userId);
+#pragma warning restore S2365
 }

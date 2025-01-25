@@ -40,7 +40,7 @@ internal sealed class MalUserService(IMyAnimeListClient _client, ILogger<MalUser
 					"You already have your account connected. If you want to switch to another account, remove current one, then add the new one.");
 			}
 
-			guild = db.DiscordGuilds.TagWith("Query guild to add existing user to it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+			guild = db.GetGuildById(guildId);
 			if (guild is null)
 			{
 				throw new UserProcessingException(BaseUser.FromUsername(username),
@@ -52,7 +52,7 @@ internal sealed class MalUserService(IMyAnimeListClient _client, ILogger<MalUser
 			return BaseUser.FromUsername(dbUser.Username);
 		}
 
-		guild = db.DiscordGuilds.TagWith("Query guild to add new user to it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+		guild = db.GetGuildById(guildId);
 		if (guild is null)
 		{
 			throw new UserProcessingException(BaseUser.FromUsername(username),
@@ -64,7 +64,7 @@ internal sealed class MalUserService(IMyAnimeListClient _client, ILogger<MalUser
 			throw new UserProcessingException(BaseUser.Empty, "You must provide username if you arent already tracked by this bot");
 		}
 
-		var duser = db.DiscordUsers.TagWith("Query discord user to link Mal user to it").TagWithCallSite().Include(x => x.Guilds).FirstOrDefault(user => user.DiscordUserId == userId);
+		var duser = db.GetDiscordUserById(userId);
 		var mUser = await _client.GetUserAsync(username, MalUserFeatures.None.GetDefault().ToParserOptions());
 		var now = TimeProvider.System.GetUtcNow();
 		if (duser is null)
