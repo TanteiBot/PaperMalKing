@@ -75,7 +75,7 @@ public static class HostBuilderExtensions
 					   });
 			}
 
-			services.AddDbContextFactory<DatabaseContext>(ConfigureDbContext);
+			services.AddPooledDbContextFactory<DatabaseContext>(ConfigureDbContext);
 			services.AddDbContext<DatabaseContext>(ConfigureDbContext, optionsLifetime: ServiceLifetime.Singleton);
 			services.AddSingleton<IExecuteOnStartupService, MigrateOnStartupService>();
 

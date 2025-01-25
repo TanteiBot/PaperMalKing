@@ -39,7 +39,7 @@ internal sealed class AniListUserService(ILogger<AniListUserService> logger, IAn
 					"You already have your account connected. If you want to switch to another account, remove current one, then add the new one.");
 			}
 
-			guild = db.DiscordGuilds.TagWith("Query guild to add existing user to it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+			guild = db.GetGuildById(guildId);
 			if (guild is null)
 			{
 				throw new UserProcessingException(BaseUser.FromUsername(username), "Current server is not in database, ask server administrator to add this server to bot");
@@ -55,14 +55,13 @@ internal sealed class AniListUserService(ILogger<AniListUserService> logger, IAn
 			throw new UserProcessingException(BaseUser.Empty, "You must provide username if you arent already tracked by this bot");
 		}
 
-		guild = db.DiscordGuilds.TagWith("Query guild to add new user to it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+		guild = db.GetGuildById(guildId);
 		if (guild is null)
 		{
 			throw new UserProcessingException(BaseUser.FromUsername(username), "Current server is not in database, ask server administrator to add this server to bot");
 		}
 
-		var dUser = db.DiscordUsers.TagWith("Query discord user to link AniList user to it").TagWithCallSite().Include(x => x.Guilds)
-					  .FirstOrDefault(du => du.DiscordUserId == userId);
+		var dUser = db.GetDiscordUserById(userId);
 		var response = await _client.GetCompleteUserInitialInfoAsync(username);
 		var now = TimeProvider.System.GetUtcNow().ToUnixTimeSeconds();
 		if (dUser is null)

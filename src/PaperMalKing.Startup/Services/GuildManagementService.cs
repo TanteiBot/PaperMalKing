@@ -20,7 +20,7 @@ internal sealed class GuildManagementService(ILogger<GuildManagementService> _lo
 	public async Task<DiscordGuild> SetChannelAsync(ulong guildId, ulong channelId)
 	{
 		using var db = _dbContextFactory.CreateDbContext();
-		var guild = db.DiscordGuilds.TagWith("Query guild to set a channel for it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId);
+		var guild = db.GetGuildById(guildId);
 		if (guild != null)
 		{
 			throw new GuildManagementException("Server already have channel to post updates into", guildId, channelId);
@@ -57,8 +57,7 @@ internal sealed class GuildManagementService(ILogger<GuildManagementService> _lo
 	public async Task UpdateChannelAsync(ulong guildId, ulong channelId)
 	{
 		using var db = _dbContextFactory.CreateDbContext();
-		var guild =
-			db.DiscordGuilds.TagWith("Query guild to update channel for it").TagWithCallSite().FirstOrDefault(g => g.DiscordGuildId == guildId) ??
+		var guild = db.GetGuildById(guildId) ??
 			throw new GuildManagementException("You can't update channel for posting updates without setting it first", guildId, channelId);
 		if (guild.PostingChannelId == channelId)
 		{

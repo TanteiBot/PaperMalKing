@@ -48,14 +48,7 @@ internal sealed class AniListUpdateProvider(ILogger<AniListUpdateProvider> logge
 		}
 
 		using var db = _dbContextFactory.CreateDbContext();
-		var users = db.AniListUsers.TagWith("Query users for update checking").TagWithCallSite().Where(u =>
-						  u.DiscordUser.Guilds.Any() &&
-						  ((u.Features & AniListUserFeatures.AnimeList) != 0 ||
-						   (u.Features & AniListUserFeatures.MangaList) != 0 ||
-						   (u.Features & AniListUserFeatures.Favourites) != 0 ||
-						   (u.Features & AniListUserFeatures.Reviews) != 0))
-					  .OrderBy(static _ => EF.Functions.Random()).ToArray();
-		foreach (var dbUser in users)
+		foreach (var dbUser in db.AniListUsersForChecking)
 		{
 			if (cancellationToken.IsCancellationRequested)
 			{
