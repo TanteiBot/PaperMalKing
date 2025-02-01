@@ -13,6 +13,6 @@ public enum ListType : byte
 	[JsonStringEnumMemberName("ANIME")]
 	Anime = 0,
 
-	[JsonStringEnumMemberName("Manga")]
+	[JsonStringEnumMemberName("MANGA")]
 	Manga = 1,
 }
